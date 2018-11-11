@@ -13,7 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Scanner;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 /**
  *
  * @author USER
@@ -56,6 +57,7 @@ public class ASD {
             }
             else if (selection.equals("4")){
                 invalidInput=false;
+                module4();
             }
             else if (selection.equals("0")){
                 invalidInput=false;
@@ -206,5 +208,61 @@ public class ASD {
                     module1();
             }
         }
+    }
+    public static void module4() throws IOException{
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        LocalDate localDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
+        String formattedString = localDate.format(formatter);
+        
+        System.out.println("Check");
+        System.out.println("============");
+        System.out.println("1. Pickup");
+        System.out.println("2. Deliver");
+        
+        while(invalidInput){
+            System.out.print("\nPlease select a choice: ");
+            String selection = sc.next();
+            sc.nextLine();
+            
+            if (selection.equals("1")){
+                invalidInput=false;
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
+                deliver(formattedString);
+            }
+            else{
+                System.out.println("Invalid Input. Please enter only 1, 2");
+            }
+        }
+    }
+    public static void deliver(String formattedString) throws IOException{
+        Scanner sc = new Scanner(System.in); 
+        File deliver = new File("deliver.txt");
+
+            //count number of records in deliver.txt
+            BufferedReader readDeliver = new BufferedReader(new FileReader("deliver.txt"));
+            int linesDeliver = 0;
+            int number = 1;
+            while (readDeliver.readLine() != null) linesDeliver++;
+            readDeliver.close();
+                
+            System.out.println("   OrderID");
+            System.out.println("   =======");
+                       
+            //find the items with the flower as its type
+            Scanner read  = new Scanner(deliver);
+            for (int i=0;i<linesDeliver;i++){
+                String str = read.nextLine();
+                String[] cols = str.split(",");
+                if (cols[1].equals(formattedString)){
+                    System.out.println(number + ". " + cols[0]);  
+                    number++;
+                }
+            }
+            read.close();
+
     }
 }
