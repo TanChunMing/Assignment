@@ -55,6 +55,7 @@ public class ASD {
             }
             else if (selection.equals("3")){
                 invalidInput=false;
+                module3();
             }
             else if (selection.equals("4")){
                 invalidInput=false;
