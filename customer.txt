@@ -1,0 +1,3 @@
+C001,Low Chun Hou,cc,2000,500
+C002,Tan Pinzhi,cc,1000,100
+C003,Tan Chun Ming,cc,500,300
