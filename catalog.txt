@@ -1,6 +1,2 @@
-red rose,60,flower
-pink rose,60,flower
-yellow rose,60,flower
-3 rose bouquet,90,bouquet
-9 rose bouquet,200,bouquet
-blue rose,60,flower
+B00001;3 rose bouquet;60;40;bouquet
+F00001;blue rose;20;100;flower

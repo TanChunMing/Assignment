@@ -91,4 +91,11 @@ public class ArrayList<T> implements List<T> {
         else
             return false;
     }
+    
+    public void clear(){
+        for(int i=0; i<array.length; i++){
+            array[i] = null;
+        }
+        totalItem = 0;
+    }
 }
