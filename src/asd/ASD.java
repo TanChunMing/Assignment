@@ -42,6 +42,23 @@ public class ASD {
     static ArrayList<String> arrayArrangementQuantity = new ArrayList();
     
     public static void main(String[] args) throws IOException {
+        updateArray();
+        
+        mainMenu();
+    }
+    
+    public static void updateArray() throws IOException{
+        //clear item in array
+        arrayFlower.clear();
+        arrayFlowerPrice.clear();
+        arrayFlowerQuantity.clear();
+        arrayBouquet.clear();
+        arrayBouquetPrice.clear();
+        arrayBouquetQuantity.clear();
+        arrayArrangement.clear();
+        arrayArrangementPrice.clear();
+        arrayArrangementQuantity.clear();
+
         //load data into arrays
         Scanner sc = new Scanner(System.in);
         File catalog = new File("catalog.txt");
@@ -77,8 +94,6 @@ public class ASD {
             }
             read.close();
         }
-        
-        mainMenu();
     }
     
     public static void mainMenu() throws IOException{
@@ -424,6 +439,8 @@ public class ASD {
         
         File tempFile = new File("temp.txt");
         tempFile.renameTo(originalFile);
+        
+        updateArray();
         
         catalog(type);
     }
