@@ -667,6 +667,7 @@ public class ASD {
             }
         }
     }
+    
     public static void module3() throws IOException{
          Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
@@ -694,8 +695,7 @@ public class ASD {
             }
         }
      }
-
-     
+  
      public static void orderItem(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
@@ -763,8 +763,6 @@ public class ASD {
         
             
      }
-    
-     
      
       public static void updateOrder(String selection) throws IOException{
           Scanner sc=new Scanner(System.in);
@@ -822,10 +820,11 @@ public class ASD {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
         String formattedString = localDate.format(formatter);
         
-        System.out.println("Check");
+        System.out.println("Order Pickup/Delivery and Consumer Payment Management");
         System.out.println("============");
-        System.out.println("1. Pickup");
-        System.out.println("2. Deliver");
+        System.out.println("1. Check Pickup List");
+        System.out.println("2. Check Deliver List");
+        System.out.println("0. Back");
         
         while(invalidInput){
             System.out.print("\nPlease select a choice: ");
@@ -834,6 +833,7 @@ public class ASD {
             
             if (selection.equals("1")){
                 invalidInput=false;
+                pickupmenu();
             }
             else if(selection.equals("2")){
                 invalidInput=false;
@@ -848,10 +848,11 @@ public class ASD {
             }
         }
     }
+    
     public static void deliver(String formattedString) throws IOException{
         Scanner sc = new Scanner(System.in); 
         File deliver = new File("deliver.txt");
-
+            System.out.println("Deliver list for "+formattedString);
             //count number of records in deliver.txt
             BufferedReader readDeliver = new BufferedReader(new FileReader("deliver.txt"));
             int linesDeliver = 0;
@@ -859,19 +860,119 @@ public class ASD {
             while (readDeliver.readLine() != null) linesDeliver++;
             readDeliver.close();
                 
-            System.out.println("   OrderID");
-            System.out.println("   =======");
+            System.out.println("   DeliverID      Delivery Man");
+            System.out.println("   =========      ============");
                        
             Scanner read  = new Scanner(deliver);
             for (int i=0;i<linesDeliver;i++){
                 String str = read.nextLine();
                 String[] cols = str.split(",");
-                if (cols[1].equals(formattedString)){
-                    System.out.println(number + ". " + cols[0]);  
+                if (cols[0].equals(formattedString)){
+                    System.out.println(number + ". " + cols[1]+"         "+ cols[2]);  
+                    number++;
+                }
+            }
+            
+            read.close();
+            System.out.println("\n");
+            module4();
+    }
+    
+    public static void pickupmenu() throws IOException{
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        LocalDate localDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
+        String formattedString = localDate.format(formatter);
+        
+        System.out.println("Pickup List");
+        System.out.println("============");
+        System.out.println("1. Check Today's Pickup List");
+        System.out.println("2. Search Pickup");
+        System.out.println("3. Update timestamp");
+        System.out.println("0. Back");
+        
+        while(invalidInput){
+            System.out.print("\nPlease select a choice: ");
+            String selection = sc.next();
+            sc.nextLine();
+            
+            if (selection.equals("1")){
+                invalidInput=false;
+                pickup(formattedString);
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
+                searchpickup();
+            }
+            else if(selection.equals("3")){
+                invalidInput=false;
+            }
+            else if (selection.equals("0")){
+                invalidInput=false;
+                module4();
+            }
+            else{
+                System.out.println("Invalid Input. Please enter only 1, 2, 3 and 0");
+            }
+        }
+    }
+    public static void pickup(String formattedString) throws IOException{
+        Scanner sc = new Scanner(System.in); 
+        File deliver = new File("pickup.txt");
+            System.out.println("Pickup list for "+formattedString);
+            //count number of records in deliver.txt
+            BufferedReader readDeliver = new BufferedReader(new FileReader("pickup.txt"));
+            int linesDeliver = 0;
+            int number = 1;
+            while (readDeliver.readLine() != null) linesDeliver++;
+            readDeliver.close();
+                
+            System.out.println("   PickUpID");
+            System.out.println("   ========");
+                       
+            Scanner read  = new Scanner(deliver);
+            for (int i=0;i<linesDeliver;i++){
+                String str = read.nextLine();
+                String[] cols = str.split(",");
+                if (cols[0].equals(formattedString)){
+                    System.out.println(number + ". " + cols[1]);  
                     number++;
                 }
             }
             read.close();
-            module4();
+            System.out.println("\n");
+            pickupmenu();
     }
+    public static void searchpickup() throws IOException{
+        Scanner sc = new Scanner(System.in);
+        
+        System.out.print("Please enter Pickup ID: ");
+        String pickupID = sc.nextLine();
+        
+        File deliver = new File("pickup.txt");
+            //count number of records in deliver.txt
+            BufferedReader readDeliver = new BufferedReader(new FileReader("pickup.txt"));
+            int linesDeliver = 0;
+            int number = 1;
+            while (readDeliver.readLine() != null) linesDeliver++;
+            readDeliver.close();
+                
+            System.out.println("   PickUpID         Date            Time");
+            System.out.println("   ========         =========       ======");
+                       
+            Scanner read  = new Scanner(deliver);
+            for (int i=0;i<linesDeliver;i++){
+                String str = read.nextLine();
+                String[] cols = str.split(",");
+                if (cols[1].equals(pickupID)){
+                    System.out.println(number + ". " + cols[1] + "           " + cols[0]);  
+                    number++;
+                }
+            }
+            read.close();
+            System.out.println("\n");
+            pickupmenu();
+    }
+    
 }
