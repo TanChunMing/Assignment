@@ -528,8 +528,8 @@ public class ASD {
             while (readCorporateCustomer.readLine() != null) linesCorporateCustomer++;
             readCorporateCustomer.close();
                 
-            System.out.println("   Customer ID\t\tName\t\t\tCredit Limit\t\tCurrent Credit");
-            System.out.println("   ============\t\t=========\t\t=============\t\t=============");
+            System.out.println("   Customer ID\t\tName\t\t\tCredit Limit\t\tCurrent Credit\t\tCompanyName");
+            System.out.println("   ============\t\t=========\t\t=============\t\t=============\t\t===============");
                        
             //find the items with the flower as its type
             Scanner read  = new Scanner(corporatecustomer);
@@ -537,7 +537,7 @@ public class ASD {
                 String str = read.nextLine();
                 String[] cols = str.split(",");
                 if (cols[2].equals(type)){
-                    System.out.println(number + ". " + cols[0] + "\t\t\t" + cols[1] + "\t\t" + cols[3]+ "\t\t\t"+ cols[4]);  
+                    System.out.println(number + ". " + cols[0] + "\t\t\t" + cols[1] + "\t\t" + cols[3]+ "\t\t\t"+ cols[4]+"\t\t\t"+cols[5]);  
                     number++;
                 }
             }
@@ -546,7 +546,6 @@ public class ASD {
         
         System.out.println("\n1. Add New Corporate Customer");
         System.out.println("2. Edit Existing Corporate Customer");
-        System.out.println("3. Delete Existing Corporate Customer");
         System.out.println("\n0. Back");
         
         while(invalidInput){
@@ -560,18 +559,16 @@ public class ASD {
             }
             else if(selection.equals("2")){
                 invalidInput=false;
+                updateCustomer(type);
                 
             }
-            else if (selection.equals("3")){
-                invalidInput=false;
-                
-            }
+            
             else if (selection.equals("0")){
                 invalidInput=false;
                 module2();
             }
             else{
-                System.out.println("Invalid Input. Please enter only 1, 2, 3 or 0");
+                System.out.println("Invalid Input. Please enter only 1, 2 or 0");
             }
         }
     }
@@ -589,6 +586,10 @@ public class ASD {
             String name = sc.nextLine();
             System.out.print("Credit Limit: ");
             String creditlimit = sc.nextLine();
+            System.out.print("Current Credit: ");
+            String currentcredit = sc.nextLine();
+            System.out.print("Company Name: ");
+            String companyname = sc.nextLine();
             
             if(id.equals("")||name.equals("")||creditlimit.equals(""))
                 System.out.println("Please do not leave any input field blank.");
@@ -598,10 +599,10 @@ public class ASD {
                 Writer output;
                     output = new BufferedWriter(new FileWriter("customer.txt",true));
                     if (!exist){
-                        output.append(id+ ","+name+ ","+type+","+creditlimit);
+                        output.append(id+ ","+name+ ","+type+","+creditlimit+","+currentcredit+","+companyname);
                     }
                     else{
-                    output.append(System.lineSeparator()+id+ ","+name+ ","+type+","+creditlimit);
+                    output.append(System.lineSeparator()+id+ ","+name+ ","+type+","+creditlimit+","+currentcredit+","+companyname);
                     }
                     output.close();
                     
@@ -609,6 +610,131 @@ public class ASD {
                     module2();
             }
         }
+    }
+    
+       public static void updateCustomer(String type) throws IOException{
+        Scanner sc = new Scanner(System.in);
+        Customer cust = new Customer();
+        boolean invalidInput = true;
+        
+        System.out.print("Please enter Customer ID: ");
+        String custID = sc.nextLine();
+        
+        //count number of records in catalog.txt
+        BufferedReader readCatalog = new BufferedReader(new FileReader("customer.txt"));
+        int linesCatalog = 0;
+        while (readCatalog.readLine() != null) linesCatalog++;
+        readCatalog.close();
+                       
+        //find the items with the flower as its type
+        Scanner read  = new Scanner(new File("customer.txt"));
+        for (int i=0;i<linesCatalog;i++){
+            String str = read.nextLine();
+            String[] cols = str.split(",");
+            if (cols[0].equals(custID)&&cols[2].equals(type)){
+                cust.setCustID(custID);
+                cust.setCustName(cols[1]);
+                cust.setCustType(cols[2]);
+                cust.setCreditLimit(cols[3]);
+                cust.setCurrentCredit(cols[4]);
+                cust.setCompanyName(cols[5]);
+            }
+            else{
+                Writer output;
+                output = new BufferedWriter(new FileWriter(new File("tempcust.txt"),true));
+                output.append(str+System.lineSeparator());
+                output.close(); 
+            }
+        }
+        read.close();
+        
+        if(cust.getCustID() == null){
+            System.out.println("The product ID you entered is not exist, please try again.\n");
+            File tempFile = new File("tempcust.txt");
+            tempFile.delete();
+            corporatecustomer(type);
+        }
+        
+        System.out.println("\nCustomer Information");
+        System.out.println("===================");
+        System.out.println("Customer ID\t\tName\t\t\tCustomer Type\t\tCredit Limit\t\tCurrent Credit\t\tCompany Name");
+        System.out.println("============\t\t=========\t\t==============\t\t=============\t\t=============\t\t==================");
+        System.out.print(cust.getCustID());
+        System.out.print("\t\t\t");
+        System.out.print(cust.getCustName());
+        System.out.print("\t\t");
+        System.out.print(cust.getCustType());
+        System.out.print("\t\t\t");
+        System.out.print(cust.getCreditLimit());
+        System.out.print("\t\t\t");
+        System.out.print(cust.getCurrentCredit());
+        System.out.print("\t\t\t");
+        System.out.print(cust.getCompanyName());
+        
+        System.out.println("\n\n===============================");
+        System.out.println("What You Want To Update?");
+        System.out.println("===============================");
+        System.out.println("1. Change Customer Name");
+        System.out.println("2. Change Customer Type");
+        System.out.println("3. Change Credit Limit");
+        System.out.println("4. Change Current Credit");
+        System.out.println("5. Change Company Name");
+        System.out.println("\n0. Back");
+        
+        while(invalidInput){
+            System.out.print("\nPlease select a choice: ");
+            String selection = sc.next();
+            sc.nextLine();
+            
+            if (selection.equals("1")){
+                invalidInput=false;
+                System.out.print("New Customer Name: ");
+                cust.setCustName(sc.nextLine());
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
+                System.out.print("New Customer Type: ");
+                cust.setCustType(sc.nextLine());
+            }
+            else if (selection.equals("3")){
+                invalidInput=false;
+                System.out.print("New Credit Limit: ");
+                cust.setCreditLimit(sc.nextLine());
+            }
+            else if (selection.equals("4")){
+                invalidInput=false;
+                System.out.print("New Current Credit: ");
+                cust.setCurrentCredit(sc.nextLine());
+            }
+            else if (selection.equals("5")){
+                invalidInput=false;
+                System.out.print("New Company Name: ");
+                cust.setCompanyName(sc.nextLine());
+            }
+            else if (selection.equals("0")){
+                invalidInput=false;
+                corporatecustomer(type);
+            }
+            else{
+                System.out.println("Invalid Input. Please enter only 1, 2, 3, 4, 5 or 0");
+            }
+        }
+        System.out.println("\nUpdate success!");
+        
+        Writer output;
+        output = new BufferedWriter(new FileWriter(new File("tempcust.txt"),true));
+        output.append(cust.getCustID() + "," + cust.getCustName() + "," + cust.getCustType() + "," + cust.getCreditLimit() + "," + cust.getCurrentCredit() + "," + cust.getCompanyName());
+        output.close(); 
+                    
+        File originalFile = new File("customer.txt");
+        originalFile.delete();
+        
+        File tempFile = new File("tempcust.txt");
+        tempFile.renameTo(originalFile);
+        
+        updateArray();
+        
+        corporatecustomer(type);
     }
     
     public static void viewcorporatecustomerdetail(String type) throws IOException{
@@ -634,8 +760,8 @@ public class ASD {
             while (readCorporateCustomer.readLine() != null) linesCorporateCustomer++;
             readCorporateCustomer.close();
                 
-            System.out.println("   Customer ID\t\tName\t\t\tCredit Limit\t\tCurrent Credit");
-            System.out.println("   ============\t\t=========\t\t=============\t\t=============");
+            System.out.println("   Customer ID\t\tName\t\t\tCredit Limit\t\tCurrent Credit\t\tCompany Name");
+            System.out.println("   ============\t\t=========\t\t=============\t\t=============\t\t==================");
                        
             //find the items with the flower as its type
             Scanner read  = new Scanner(corporatecustomer);
@@ -643,7 +769,7 @@ public class ASD {
                 String str = read.nextLine();
                 String[] cols = str.split(",");
                 if (cols[2].equals(type)){
-                    System.out.println(number + ". " + cols[0] + "\t\t\t" + cols[1] + "\t\t" + cols[3]+ "\t\t\t"+ cols[4]);  
+                    System.out.println(number + ". " + cols[0] + "\t\t\t" + cols[1] + "\t\t" + cols[3]+ "\t\t\t"+ cols[4]+"\t\t\t"+cols[5]);  
                     number++;
                 }
             }
