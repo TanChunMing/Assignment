@@ -827,6 +827,9 @@ public class ASD {
         boolean invalidInput = true;
         File catalog = new File("catalog.txt");
         boolean exist = catalog.exists();
+        Product p1 = new Product();
+        String str1;
+        
         
         //check if catalog file exist
         if (!exist){
@@ -841,103 +844,118 @@ public class ASD {
             BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
             int linesCatalog = 0;
             int number = 1;
-            int temp =0;
+            
             while (readCatalog.readLine() != null) linesCatalog++;
             readCatalog.close();
                 
-            System.out.println("   Product Name\t\tPrice(RM)");
-            System.out.println("   ============\t\t=========");
+            System.out.println("   Product ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
+            System.out.println("   ==========\t\t============\t\t=========\t=================");
                        
             //find the items with the flower as its type
             Scanner read  = new Scanner(catalog);
             for (int i=0;i<linesCatalog;i++){
                 String str = read.nextLine();
-                String[] cols = str.split(",");
-                if (cols[2].equals(type)){
-                    System.out.println(number + ". " + cols[0] + "\t\t" + cols[1]); 
-                    temp=number;
-                    
+                String[] cols = str.split(";");
+                if (cols[4].equals(type)){
+                    System.out.println(number + ". " + cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3]);
                     number++;
                     
                 }
           
             }read.close();
         }
-            while(invalidInput){
-                
-            System.out.print("Please select your orders:");
-            String selection = sc.next();
-           
-                
-            
-            
-            
-            if(selection.equals("1")){
-               updateOrder(selection);
-                invalidInput=false;
-                
-                 
-            }else{
-                System.out.println("Invalid Input. Please enter only valid number");
+        System.out.print("Please enter Product ID: ");
+        String productID = sc.nextLine();
+        
+         //count number of records in catalog.txt
+        BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+        int linesCatalog = 0;
+        while (readCatalog.readLine() != null) linesCatalog++;
+        readCatalog.close();
+         
+        
+         //find the items with the flower as its type
+        Scanner read  = new Scanner(new File("catalog.txt"));
+        for (int i=0;i<linesCatalog;i++){
+            String str = read.nextLine();
+            String[] cols = str.split(";");
+            if (cols[0].equals(productID)&&cols[4].equals(type)){
+                p1.setProductID(productID);
+                p1.setProductName(cols[1]);
+                p1.setPrice(cols[2]);
+                p1.setQuantity(cols[3]);
+                p1.setType(cols[4]);
             }
-            
-
-        
-                
-                
-        }
-        
-            
-     }
-     
-      public static void updateOrder(String selection) throws IOException{
-          Scanner sc=new Scanner(System.in);
-          String quantities;  
-          String str ;
-          boolean blankInput = true;
-          boolean nextOrder = true;
-          File order = new File("order.txt");
-          boolean exist = order.exists();
-          while(blankInput){
-          System.out.print("Enter your Quantities ");
-          quantities=sc.nextLine();
-           if(quantities.equals(""))
-                System.out.println("Please do not leave any input field blank.");
             else{
-                blankInput = false;
                 
-               Writer output;
-               output = new BufferedWriter(new FileWriter("order.txt",true));
-                if (!exist){
-                        output.append(quantities);
-                    }
-                    else{
-                    output.append(System.lineSeparator()+quantities);
-                    }
-                    output.close();
-                    
-                    System.out.println("\nNew Order added!");
-          }
-           while(nextOrder){
-               System.out.print("Do you still want to add orders ? Y or N only ");
-               str = sc.next();
-               if(str.equals("Y")){
-                 nextOrder=false;
+            }
+        }
+        read.close();
+        
+         if(p1.getProductID() == null){
+            System.out.println("The product ID you entered is not exist, please try again.\n");
+            File tempFile = new File("temp1.txt");
+            tempFile.delete();
+            module3();
+        }
+   
+         System.out.print("\nEnter quantities: ");
+             p1.setQuantity(sc.nextLine());
+              
+              
+        
+        
+            while(invalidInput){
+             System.out.print("Did u want to paid by cash when you pick up deliver? Yes or No :");
+                p1.setPayment(sc.nextLine());
+         
+       
+            System.out.print("Do you still want to add orders ? Y or N only ");
+               str1 = sc.next();
+               if(str1.equals("Y")){
+                 invalidInput=false;
                  orderItem("flower");
-               }else if(str.equals("N")){
-                   nextOrder=false;
+               }else if(str1.equals("N")){
+                   invalidInput=false;
                    System.out.println("Thank for the orders");
                      }
                else {
                    System.out.println("Invalid input. Please enter Y or N only");
                      }
-                        
-                     
-                   
+      
                    }
+              
+        Writer output;
+        output = new BufferedWriter(new FileWriter(new File("temp1.txt"),true));
+        output.append(p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity()+";"+p1.getPayment());
+        output.close(); 
+                    
+        File originalFile = new File("order.txt");
+        originalFile.delete();
+        
+        File tempFile = new File("temp1.txt");
+        tempFile.renameTo(originalFile);
+              
+              
+          
       }
+            
+            
+        
+         
      
-      }
+     
+      
+
+          
+  
+        
+        
+        //
+        
+          
+     
+      
     
     public static void module4() throws IOException{
         Scanner sc = new Scanner(System.in);
