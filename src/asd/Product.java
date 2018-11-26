@@ -61,9 +61,9 @@ public class Product {
         this.type=type;
     }
         public String getPayment(){
-        return type;
+        return payment;
     }
     public void setPayment(String type){
-        this.type=type;
+        this.payment=payment;
     }
 }
