@@ -15,17 +15,19 @@ public class Product {
     private int price;
     private int quantity;
     private String type;
+    private String payment;
     
     public Product(){
         
     }
     
-    public Product(String productID, String productName, String price, String quantity, String type){
+    public Product(String productID, String productName, String price, String quantity, String type, String payment){
         this.productID=productID;
         this.productName=productName;
         this.price=Integer.parseInt(price);
         this.quantity=Integer.parseInt(quantity);
         this.type=type;
+        this.payment=payment;
     }
     
     public String getProductID(){
@@ -56,6 +58,12 @@ public class Product {
         return type;
     }
     public void setType(String type){
+        this.type=type;
+    }
+        public String getPayment(){
+        return type;
+    }
+    public void setPayment(String type){
         this.type=type;
     }
 }
