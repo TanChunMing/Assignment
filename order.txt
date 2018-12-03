@@ -1,3 +1,1 @@
-2
-red rose,60,2
-3 rose bouquet,90,5
+F00002;pink rose;123;Yes

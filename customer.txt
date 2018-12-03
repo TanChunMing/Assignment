@@ -1,3 +1,5 @@
-C001,Low Chun Hou,cc,2000,500
-C002,Tan Pinzhi,cc,1000,100
-C003,Tan Chun Ming,cc,500,300
+C001,Low Chun Hou,cc,2000,500,The Big One
+C002,Tan Pinzhi,cc,1000,100,The Small One
+C003,Tan Chun Ming,cc,500,300,The Tiny One
+C004,Ng Say Khieng,cc,300,50,The Ant
+C005,Tan Chong Jun,cc,1000,0,The First

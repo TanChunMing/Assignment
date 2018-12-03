@@ -1,2 +1,4 @@
-B00001;3 rose bouquet;60;40;bouquet
-F00001;blue rose;10;100;flower
+F00002;pink rose;10;100;flower
+F00003;red rose;10;100;flower
+B00001;4 rose bouquet;60;40;bouquet
+F00001;white rose;10;100;flower

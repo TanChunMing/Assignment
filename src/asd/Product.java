@@ -63,7 +63,7 @@ public class Product {
         public String getPayment(){
         return payment;
     }
-    public void setPayment(String type){
+    public void setPayment(String payment){
         this.payment=payment;
     }
 }

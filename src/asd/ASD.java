@@ -903,11 +903,12 @@ public class ASD {
              p1.setQuantity(sc.nextLine());
               
               
-        
-        
-            while(invalidInput){
              System.out.print("Did u want to paid by cash when you pick up deliver? Yes or No :");
-                p1.setPayment(sc.nextLine());
+                p1.setPayment(sc.nextLine());        
+                
+                
+            while(invalidInput){
+
          
        
             System.out.print("Do you still want to add orders ? Y or N only ");
@@ -1072,15 +1073,15 @@ public class ASD {
             while (readDeliver.readLine() != null) linesDeliver++;
             readDeliver.close();
                 
-            System.out.println("   PickUpID");
-            System.out.println("   ========");
+            System.out.println("   PickUpID     Time");
+            System.out.println("   ========     =====");
                        
             Scanner read  = new Scanner(deliver);
             for (int i=0;i<linesDeliver;i++){
                 String str = read.nextLine();
                 String[] cols = str.split(",");
                 if (cols[0].equals(formattedString)){
-                    System.out.println(number + ". " + cols[1]);  
+                    System.out.println(number + ". " + cols[1]+ "       " + cols[2]);  
                     number++;
                 }
             }
