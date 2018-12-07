@@ -71,7 +71,7 @@ public class ASD {
             while (readCatalog.readLine() != null) linesCatalog++;
             readCatalog.close();
             
-            //find the items with the flower as its type
+            //add item to different arrayList based on their type
             Scanner read  = new Scanner(catalog);
             for (int i=0;i<linesCatalog;i++){
                 String str = read.nextLine();
@@ -235,7 +235,7 @@ public class ASD {
             }
             else if (selection.equals("3")){
                 invalidInput=false;
-                
+                deleteProduct(type);
             }
             else if (selection.equals("0")){
                 invalidInput=false;
@@ -267,11 +267,10 @@ public class ASD {
             //count number of records in catalog.txt
                 BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
                 int linesCatalog = 0;
-                int number = 1;
                 while (readCatalog.readLine() != null) linesCatalog++;
                 readCatalog.close();
 
-            //calculate linesCatalog
+            //calculate linesCatalog with particular product type
             Scanner read  = new Scanner(catalog);
                 for (int i=0;i<linesCatalog;i++){
                     String str = read.nextLine();
@@ -282,22 +281,23 @@ public class ASD {
                 }
             read.close();
 
-            //create productID
-                if (productCount <10){
+                //create productID
+                if (productCount <9){
                     productID = productID + "0000"+(productCount+1);
                 }
-                else if (productCount <100){
+                else if (productCount <99){
                     productID = productID + "000"+(productCount+1);
                 }
-                else if (productCount >= 100 && productCount < 1000){
+                else if (productCount < 999){
                     productID = productID + "00"+(productCount+1);
                 }  
-                else if (productCount >= 1000 && productCount < 10000){
+                else if (productCount < 9999){
                     productID = productID + "0"+(productCount+1);
                 }
                 else{
                     productID = productID +(productCount+1);
                 }
+                productID = checkID(productID, productCount);
         }
         else
             productID = productID + "00001";
@@ -351,7 +351,7 @@ public class ASD {
         while (readCatalog.readLine() != null) linesCatalog++;
         readCatalog.close();
                        
-        //find the items with the flower as its type
+        //find the items with the flower as its type and the productID matched
         Scanner read  = new Scanner(new File("catalog.txt"));
         for (int i=0;i<linesCatalog;i++){
             String str = read.nextLine();
@@ -443,6 +443,118 @@ public class ASD {
         updateArray();
         
         catalog(type);
+    }
+    
+    public static void deleteProduct(String type) throws IOException{
+        Scanner sc = new Scanner(System.in);
+        Product p1 = new Product();
+        boolean invalidInput = true;
+        
+        System.out.print("Please enter Product ID: ");
+        String productID = sc.nextLine();
+        
+        //count number of records in catalog.txt
+        BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+        int linesCatalog = 0;
+        while (readCatalog.readLine() != null) linesCatalog++;
+        readCatalog.close();
+                       
+        //find the items with the flower as its type but the productID not matched
+        Scanner read  = new Scanner(new File("catalog.txt"));
+        for (int i=0;i<linesCatalog;i++){
+            String str = read.nextLine();
+            String[] cols = str.split(";");
+            if (cols[0].equals(productID)&&cols[4].equals(type)){
+                p1.setProductID(productID);
+                p1.setProductName(cols[1]);
+                p1.setPrice(cols[2]);
+                p1.setQuantity(cols[3]);
+                p1.setType(cols[4]);
+            }
+            else{
+                Writer output;
+                output = new BufferedWriter(new FileWriter(new File("temp.txt"),true));
+                if(read.hasNextLine()){
+                    output.append(str+System.lineSeparator());
+                    output.close(); 
+                }
+                else{
+                    output.append(str);
+                    output.close(); 
+                }
+            }
+        }
+        read.close();
+
+        if(p1.getProductID() == null){
+            System.out.println("The product ID you entered is not exist, please try again.\n");
+            File tempFile = new File("temp.txt");
+            tempFile.delete();
+            catalog(type);
+        }
+        
+        while (invalidInput){
+            System.out.println("Do you really want to delete " + p1.getProductID() + ", " + p1.getProductName() + "?(Please enter Y or N)" );
+            String selection = sc.nextLine();
+
+            if(selection.equals("Y")||selection.equals("y")){
+                invalidInput=false;
+                File originalFile = new File("catalog.txt");
+                originalFile.delete();
+
+                File tempFile = new File("temp.txt");
+                tempFile.renameTo(originalFile);
+                
+                System.out.println(p1.getProductID() + ", " + p1.getProductName() + " is deleted.");
+            }
+            else if(selection.equals("N") || selection.equals("n")){
+                invalidInput=false;
+                File tempFile = new File("temp.txt");
+                tempFile.delete();
+            }  
+            else{
+                System.out.println("Invalid input. Please enter only Y or N.");
+            }
+        }
+        updateArray();
+        
+        catalog(type);
+    }
+    
+    private static String checkID(String productID, int productCount) throws IOException{
+        String ID = productID;
+        
+        //count number of records in catalog.txt
+            BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+            int linesCatalog = 0;
+            while (readCatalog.readLine() != null) linesCatalog++;
+            readCatalog.close();
+            
+            //find the items with the flower as its type
+            Scanner read  = new Scanner(new File("catalog.txt"));
+            for (int i=0;i<linesCatalog;i++){
+                String str = read.nextLine();
+                String[] cols = str.split(";");
+                if (cols[0].equals(ID)){
+                    productCount++;
+                    if (productCount <9){
+                        ID = productID.charAt(0) + "0000"+(productCount+1);
+                    }
+                    else if (productCount <99){
+                        ID = productID.charAt(0) + "000"+(productCount+1);
+                    }
+                    else if (productCount < 999){
+                        ID = productID.charAt(0) + "00"+(productCount+1);
+                    }  
+                    else if (productCount < 9999){
+                        ID = productID.charAt(0) + "0"+(productCount+1);
+                    }
+                    checkID(ID, productCount);
+                }
+            }
+            read.close();
+            
+            return ID;
     }
     
     private static boolean isInteger(String str){
