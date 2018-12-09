@@ -8,7 +8,6 @@ package asd;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -1051,24 +1050,8 @@ public class ASD {
               
               
           
-      }
-            
-            
-        
-         
-     
-     
-      
-
+      }  
           
-  
-        
-        
-        //
-        
-          
-     
-      
     
     public static void module4() throws IOException{
         Scanner sc = new Scanner(System.in);
@@ -1079,8 +1062,8 @@ public class ASD {
         
         System.out.println("Order Pickup/Delivery and Consumer Payment Management");
         System.out.println("============");
-        System.out.println("1. Check Pickup List");
-        System.out.println("2. Check Deliver List");
+        System.out.println("1. Pickup List");
+        System.out.println("2. Deliver List");
         System.out.println("0. Back");
         
         while(invalidInput){
@@ -1129,8 +1112,16 @@ public class ASD {
                     number++;
                 }
             }
-            
+            if(number == 1){
+            System.out.println("-------------------------------");
+            System.out.println("|                             |");
+            System.out.println("|     No deliver for today    |");
+            System.out.println("|                             |");
+            System.out.println("-------------------------------");
+            }
             read.close();
+            
+                    
             System.out.println("\n");
             module4();
     }
@@ -1164,6 +1155,8 @@ public class ASD {
             }
             else if(selection.equals("3")){
                 invalidInput=false;
+                timestamp();
+                
             }
             else if (selection.equals("0")){
                 invalidInput=false;
@@ -1179,11 +1172,11 @@ public class ASD {
         File deliver = new File("pickup.txt");
             System.out.println("Pickup list for "+formattedString);
             //count number of records in deliver.txt
-            BufferedReader readDeliver = new BufferedReader(new FileReader("pickup.txt"));
+            BufferedReader readPickup = new BufferedReader(new FileReader("pickup.txt"));
             int linesDeliver = 0;
             int number = 1;
-            while (readDeliver.readLine() != null) linesDeliver++;
-            readDeliver.close();
+            while (readPickup.readLine() != null) linesDeliver++;
+            readPickup.close();
                 
             System.out.println("   PickUpID     Time       Customer Name");
             System.out.println("   ========     =====      =============");
@@ -1197,6 +1190,13 @@ public class ASD {
                     number++;
                 }
             }
+            if(number == 1){
+            System.out.println("------------------------------");
+            System.out.println("|                            |");
+            System.out.println("|     No pickup for today    |");
+            System.out.println("|                            |");
+            System.out.println("------------------------------");
+            }
             read.close();
             System.out.println("\n");
             pickupmenu();
@@ -1209,21 +1209,21 @@ public class ASD {
         
         File deliver = new File("pickup.txt");
             //count number of records in deliver.txt
-            BufferedReader readDeliver = new BufferedReader(new FileReader("pickup.txt"));
+            BufferedReader readPickup = new BufferedReader(new FileReader("pickup.txt"));
             int linesDeliver = 0;
             int number = 1;
-            while (readDeliver.readLine() != null) linesDeliver++;
-            readDeliver.close();
+            while (readPickup.readLine() != null) linesDeliver++;
+            readPickup.close();
                 
-            System.out.println("   PickUpID         Date            Time");
-            System.out.println("   ========         =========       ======");
+            System.out.println("   PickUpID         Date            Time        Customer Name");
+            System.out.println("   ========         =========       =====       =============");
                        
             Scanner read  = new Scanner(deliver);
             for (int i=0;i<linesDeliver;i++){
                 String str = read.nextLine();
                 String[] cols = str.split(",");
                 if (cols[1].equals(pickupID)){
-                    System.out.println(number + ". " + cols[1] + "           " + cols[0]);  
+                    System.out.println(number + ". " + cols[1] + "           " + cols[0]+ "      " + cols[2]+"       " + cols[3]);  
                     number++;
                 }
             }
@@ -1231,5 +1231,72 @@ public class ASD {
             System.out.println("\n");
             pickupmenu();
     }
-    
+    public static void timestamp() throws IOException{
+        Scanner sc = new Scanner(System.in);
+        Pickup p1 = new Pickup();
+        
+        System.out.print("Please enter Pickup ID: ");
+        String pickupID = sc.nextLine();
+        
+        //count number of records in pickup.txt
+        BufferedReader readPickup = new BufferedReader(new FileReader("pickup.txt"));
+        int linesCatalog = 0;
+        while (readPickup.readLine() != null) linesCatalog++;
+        readPickup.close();
+                       
+        //find the order that matached
+        Scanner read  = new Scanner(new File("pickup.txt"));
+        for (int i=0;i<linesCatalog;i++){
+            String str = read.nextLine();
+            String[] cols = str.split(",");
+            if (cols[1].equals(pickupID)){
+                p1.setPickupID(pickupID);
+                p1.setPickupDate(cols[0]);
+                p1.setTime(cols[2]);
+                p1.setCustomerName(cols[3]);
+            }
+            else{
+                Writer output;
+                output = new BufferedWriter(new FileWriter(new File("temp.txt"),true));
+                output.append(str+System.lineSeparator());
+                output.close(); 
+            }
+        }
+        read.close();
+        
+        if(p1.getPickupID() == null){
+            System.out.println("The pickup ID you entered is not exist, please try again.\n");
+            File tempFile = new File("temp.txt");
+            tempFile.delete();
+            timestamp();
+        }
+        
+        System.out.println("\nPickupID Information");
+        System.out.println("====================");
+        System.out.print("Pickup ID: ");
+        System.out.print(p1.getPickupID());
+        System.out.print("\nPickup Date: ");
+        System.out.print(p1.getPickupDate());
+        System.out.print("\nPickup Time: ");
+        System.out.print(p1.getTime());
+        System.out.print("\nCustomer Name: ");
+        System.out.print(p1.getCustomerName());
+        
+        System.out.print("\nPlease insert a time: ");
+        p1.setTime(sc.nextLine());
+        System.out.println("\nUpdate success!");
+        
+        Writer output;
+        output = new BufferedWriter(new FileWriter(new File("temp.txt"),true));
+        output.append(p1.getPickupDate() + "," +p1.getPickupID() + "," +  p1.getTime() + "," + p1.getCustomerName());
+        output.close(); 
+                    
+        File originalFile = new File("pickup.txt");
+        originalFile.delete();
+        
+        File tempFile = new File("temp.txt");
+        tempFile.renameTo(originalFile);
+        
+        pickupmenu();
+    }
 }
