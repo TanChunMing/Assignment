@@ -1185,8 +1185,8 @@ public class ASD {
             while (readDeliver.readLine() != null) linesDeliver++;
             readDeliver.close();
                 
-            System.out.println("   PickUpID     Time");
-            System.out.println("   ========     =====");
+            System.out.println("   PickUpID     Time       Customer Name");
+            System.out.println("   ========     =====      =============");
                        
             Scanner read  = new Scanner(deliver);
             for (int i=0;i<linesDeliver;i++){
