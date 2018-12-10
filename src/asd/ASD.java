@@ -657,6 +657,7 @@ public class ASD {
         
         System.out.println("\n1. Add New Corporate Customer");
         System.out.println("2. Edit Existing Corporate Customer");
+      
         System.out.println("\n0. Back");
         
         while(invalidInput){
@@ -673,7 +674,7 @@ public class ASD {
                 updateCustomer(type);
                 
             }
-            
+      
             else if (selection.equals("0")){
                 invalidInput=false;
                 module2();
@@ -906,14 +907,15 @@ public class ASD {
     }
     
     public static void module3() throws IOException{
-         Scanner sc = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
-        System.out.println("\nPlease Select a Item to Order:");
-        System.out.println("============");
-        System.out.println("1. Fresh Flower");
-        System.out.println("2. Bouquet");
         
-          while(invalidInput){
+        System.out.println("Option");
+        System.out.println("============");
+        System.out.println("1.Nomral Customer");
+        System.out.println("2.C - Customer");
+        System.out.println("3.View C - Customer Credit Limit");
+        while(invalidInput){
             System.out.print("\nPlease select a choice: ");
             String selection = sc.next();
             sc.nextLine();
@@ -922,18 +924,288 @@ public class ASD {
                 invalidInput=false;
                 orderItem("flower");
             }
-                       
-            else if (selection.equals("0")){
+            else if (selection.equals("2")){
+                invalidInput=false;
+                corderItem("flower");
+            }
+              else if (selection.equals("3")){
+                invalidInput=false;
+                viewCustomerLimit("cc");
+            }
+
+            
+             else if(selection.equals("0")){
                 invalidInput=false;
                 mainMenu();
             }
             else{
-                System.out.println("Invalid Input. Please enter only 1, 2, or 0");
+                System.out.println("Invalid Input. Please enter only 1, or 0");
             }
         }
-     }
+    } 
+ public static void viewCustomerLimit(String type) throws IOException{
+      Scanner sc = new Scanner(System.in);
+        Customer cust = new Customer();
+        boolean invalidInput = true;
+        
+         File corporatecustomer = new File("customer.txt");
+        boolean exist = corporatecustomer.exists();
+        
+        //check if catalog file exist
+        if (!exist){
+            System.out.println("-------------------------------------");
+            System.out.println("|                                   |");
+            System.out.println("|    Corporate Customer is empty    |");
+            System.out.println("|                                   |");
+            System.out.println("-------------------------------------");
+        }
+        else{
+            //count number of records in catalog.txt
+            BufferedReader readCorporateCustomer = new BufferedReader(new FileReader("customer.txt"));
+            int linesCorporateCustomer = 0;
+            int number = 1;
+            while (readCorporateCustomer.readLine() != null) linesCorporateCustomer++;
+            readCorporateCustomer.close();
+                
+ 
+                       
+            //find the items with the flower as its type
+            Scanner read  = new Scanner(corporatecustomer);
+            for (int i=0;i<linesCorporateCustomer;i++){
+                String str = read.nextLine();
+                String[] cols = str.split(",");
+                if (cols[2].equals(type)){
+                   
+                    number++;
+                }
+            }
+            read.close();
+        }
+        
+        System.out.print("Please enter Customer ID: ");
+        String custID = sc.nextLine();
+        
+        //count number of records in catalog.txt
+        BufferedReader readCatalog = new BufferedReader(new FileReader("customer.txt"));
+        int linesCatalog = 0;
+        while (readCatalog.readLine() != null) linesCatalog++;
+        readCatalog.close();
+                       
+        //find the items with the flower as its type
+        Scanner read  = new Scanner(new File("customer.txt"));
+        for (int i=0;i<linesCatalog;i++){
+            String str = read.nextLine();
+            String[] cols = str.split(",");
+            if (cols[0].equals(custID)&&cols[2].equals(type)){
+                cust.setCustID(custID);
+                cust.setCustName(cols[1]);
+                cust.setCustType(cols[2]);
+                cust.setCreditLimit(cols[3]);
+                cust.setCurrentCredit(cols[4]);
+                cust.setCompanyName(cols[5]);
+            }
+            else{
+ 
+            }
+        }
+        read.close();
+        
+
+        
+        System.out.println("\nCustomer Information");
+        System.out.println("===================");
+        System.out.println("Customer ID\t\tName\t\t\tCustomer Type\t\tCredit Limit\t\tCurrent Credit\t\tCompany Name");
+        System.out.println("============\t\t=========\t\t==============\t\t=============\t\t=============\t\t==================");
+        System.out.print(cust.getCustID());
+        System.out.print("\t\t\t");
+        System.out.print(cust.getCustName());
+        System.out.print("\t\t");
+        System.out.print(cust.getCustType());
+        System.out.print("\t\t\t");
+        System.out.print(cust.getCreditLimit());
+        System.out.print("\t\t\t");
+        System.out.print(cust.getCurrentCredit());
+        System.out.print("\t\t\t");
+        System.out.print(cust.getCompanyName());
+        
+        System.out.println("Option");
+        System.out.println("============");
+        System.out.println("1.Nomral Customer");
+        System.out.println("2.C - Customer");
+        System.out.println("3.View C - Customer Credit Limit");
+        System.out.println("0.Back");
+        while(invalidInput){
+            System.out.print("\nPlease select a choice: ");
+            String selection = sc.next();
+            sc.nextLine();
+            
+            if (selection.equals("1")){
+                invalidInput=false;
+                orderItem("flower");
+            }
+            else if (selection.equals("2")){
+                invalidInput=false;
+                corderItem("flower");
+            }
+              else if (selection.equals("3")){
+                invalidInput=false;
+                viewCustomerLimit("cc");
+            }
+
+            
+             else if(selection.equals("0")){
+                invalidInput=false;
+                mainMenu();
+            }
+            else{
+                System.out.println("Invalid Input. Please enter only 1, or 0");
+            }
+ 
+    }
+ }
+    
   
-     public static void orderItem(String type) throws IOException{
+     
+     
+
+     
+   
+        
+        public static void corderItem(String type) throws IOException{
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        File catalog = new File("catalog.txt");
+        boolean exist = catalog.exists();
+        Product p1 = new Product();
+        Customer cust = new Customer();
+        String str1;
+      
+        
+        
+        //check if catalog file exist
+        if (!exist){
+            System.out.println("--------------------------");
+            System.out.println("|                        |");
+            System.out.println("|    Catalog is empty    |");
+            System.out.println("|                        |");
+            System.out.println("--------------------------");
+        }
+        else{
+            //count number of records in catalog.txt
+            BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+            int linesCatalog = 0;
+            int number = 1;
+            
+            while (readCatalog.readLine() != null) linesCatalog++;
+            readCatalog.close();
+                
+            System.out.println("   Product ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
+            System.out.println("   ==========\t\t============\t\t=========\t=================");
+                       
+            //find the items with the flower as its type
+            Scanner read  = new Scanner(catalog);
+            for (int i=0;i<linesCatalog;i++){
+                String str = read.nextLine();
+                String[] cols = str.split(";");
+                if (cols[4].equals(type)){
+                    System.out.println(number + ". " + cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3]);
+                    number++;
+                    
+                }
+          
+            }read.close();
+        }
+        
+        
+
+        
+    
+
+                System.out.print("Enter Customer ID:");
+                cust.setCustID(sc.nextLine());
+                String custIDtmp=cust.getCustID();
+
+
+        
+        System.out.print("Please enter Product ID: ");
+        String productID = sc.nextLine();
+        
+
+        
+         //count number of records in catalog.txt
+        BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+        int linesCatalog = 0;
+        while (readCatalog.readLine() != null) linesCatalog++;
+        readCatalog.close();
+         
+        
+         //find the items with the flower as its type
+        Scanner read  = new Scanner(new File("catalog.txt"));
+        for (int i=0;i<linesCatalog;i++){
+            String str = read.nextLine();
+            String[] cols = str.split(";");
+            if (cols[0].equals(productID)&&cols[4].equals(type)){
+                p1.setProductID(productID);
+                p1.setProductName(cols[1]);
+                p1.setPrice(cols[2]);
+                p1.setQuantity(cols[3]);
+                p1.setType(cols[4]);
+            }
+            else{
+                
+            }
+        }
+        read.close();
+        
+         if(p1.getProductID() == null){
+            System.out.println("The product ID you entered is not exist, please try again.\n");
+            File tempFile = new File("tempc.txt");
+            tempFile.delete();
+            module3();
+        }
+   
+         System.out.print("\nEnter quantities: ");
+             p1.setQuantity(sc.nextLine());
+              
+            System.out.print("\nEnter again coperate customer ID :");
+             cust.setCustID(sc.nextLine());
+                   
+                
+                
+            while(invalidInput){
+
+            System.out.print("Do you still want to add orders ? Y or N only ");
+               str1 = sc.next();
+               if(str1.equals("Y")){
+                 invalidInput=false;
+                 corderItem("flower");
+               }else if(str1.equals("N")){
+                   invalidInput=false;
+                   System.out.println("Thank for the orders");
+                  
+                     }
+               else {
+                   System.out.println("Invalid input. Please enter Y or N only");
+                     }
+      
+                   }
+              
+        Writer output;
+        output = new BufferedWriter(new FileWriter(new File("tempc.txt"),true));
+        output.append(cust.getCustID()+";"+p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity());
+        output.close(); 
+                    
+        File originalFile = new File("corder.txt");
+        originalFile.delete();
+        
+        File tempFile = new File("tempc.txt");
+        tempFile.renameTo(originalFile);
+              
+              
+          
+      }  
+
+        public static void orderItem(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
         File catalog = new File("catalog.txt");
@@ -1050,8 +1322,8 @@ public class ASD {
               
               
           
-      }  
-          
+      } 
+     
     
     public static void module4() throws IOException{
         Scanner sc = new Scanner(System.in);
