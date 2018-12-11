@@ -137,6 +137,7 @@ public class ASD {
             }
         }
     }
+    
     public static void module1() throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
@@ -615,7 +616,6 @@ public class ASD {
             }
         }
     } 
-    
     public static void corporatecustomer(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
@@ -684,7 +684,6 @@ public class ASD {
             }
         }
     }
-    
     public static void addNewCorporateCustomer(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean blankInput = true;
@@ -723,8 +722,7 @@ public class ASD {
             }
         }
     }
-    
-       public static void updateCustomer(String type) throws IOException{
+    public static void updateCustomer(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         Customer cust = new Customer();
         boolean invalidInput = true;
@@ -848,7 +846,6 @@ public class ASD {
         
         corporatecustomer(type);
     }
-    
     public static void viewcorporatecustomerdetail(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
@@ -943,7 +940,7 @@ public class ASD {
             }
         }
     } 
- public static void viewCustomerLimit(String type) throws IOException{
+    public static void viewCustomerLimit(String type) throws IOException{
       Scanner sc = new Scanner(System.in);
         Customer cust = new Customer();
         boolean invalidInput = true;
@@ -1063,15 +1060,7 @@ public class ASD {
  
     }
  }
-    
-  
-     
-     
-
-     
-   
-        
-        public static void corderItem(String type) throws IOException{
+    public static void corderItem(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
         File catalog = new File("catalog.txt");
@@ -1204,8 +1193,7 @@ public class ASD {
               
           
       }  
-
-        public static void orderItem(String type) throws IOException{
+    public static void orderItem(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
         File catalog = new File("catalog.txt");
@@ -1324,7 +1312,6 @@ public class ASD {
           
       } 
      
-    
     public static void module4() throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
@@ -1349,7 +1336,7 @@ public class ASD {
             }
             else if(selection.equals("2")){
                 invalidInput=false;
-                deliver(formattedString);
+                delivermenu();
             }
             else if (selection.equals("0")){
                 invalidInput=false;
@@ -1360,7 +1347,47 @@ public class ASD {
             }
         }
     }
-    
+    public static void delivermenu() throws IOException{
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        LocalDate localDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
+        String formattedString = localDate.format(formatter);
+        
+        System.out.println("Deliver List");
+        System.out.println("============");
+        System.out.println("1. Check Today's Deliver List");
+        System.out.println("2. aaa");
+        System.out.println("3. bbb");
+        System.out.println("0. Back");
+        
+        while(invalidInput){
+            System.out.print("\nPlease select a choice: ");
+            String selection = sc.next();
+            sc.nextLine();
+            
+            if (selection.equals("1")){
+                invalidInput=false;
+                deliver(formattedString);
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
+                
+            }
+            else if(selection.equals("3")){
+                invalidInput=false;
+                
+                
+            }
+            else if (selection.equals("0")){
+                invalidInput=false;
+                module4();
+            }
+            else{
+                System.out.println("Invalid Input. Please enter only 1, 2, 3 and 0");
+            }
+        }
+    }
     public static void deliver(String formattedString) throws IOException{
         Scanner sc = new Scanner(System.in); 
         File deliver = new File("deliver.txt");
@@ -1385,7 +1412,7 @@ public class ASD {
                 }
             }
             if(number == 1){
-            System.out.println("-------------------------------");
+            System.out.println("\n-------------------------------");
             System.out.println("|                             |");
             System.out.println("|     No deliver for today    |");
             System.out.println("|                             |");
@@ -1397,7 +1424,6 @@ public class ASD {
             System.out.println("\n");
             module4();
     }
-    
     public static void pickupmenu() throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
@@ -1408,7 +1434,7 @@ public class ASD {
         System.out.println("Pickup List");
         System.out.println("============");
         System.out.println("1. Check Today's Pickup List");
-        System.out.println("2. Search Pickup");
+        System.out.println("2. Add New Pickup");
         System.out.println("3. Update timestamp");
         System.out.println("0. Back");
         
@@ -1423,11 +1449,11 @@ public class ASD {
             }
             else if(selection.equals("2")){
                 invalidInput=false;
-                searchpickup();
+                addpickup();
             }
             else if(selection.equals("3")){
                 invalidInput=false;
-                timestamp();
+                timestamp(formattedString);
                 
             }
             else if (selection.equals("0")){
@@ -1473,59 +1499,99 @@ public class ASD {
             System.out.println("\n");
             pickupmenu();
     }
-    public static void searchpickup() throws IOException{
+    public static void addpickup() throws IOException{
         Scanner sc = new Scanner(System.in);
+        boolean blankInput = true;
+        File pickup = new File("pickup.txt");
+        boolean exist = pickup.exists();
+        String pickupID = "P00001";
+        int pickupCount = 0;
+        String time = "null";
         
-        System.out.print("Please enter Pickup ID: ");
-        String pickupID = sc.nextLine();
-        
-        File deliver = new File("pickup.txt");
-            //count number of records in deliver.txt
-            BufferedReader readPickup = new BufferedReader(new FileReader("pickup.txt"));
-            int linesDeliver = 0;
-            int number = 1;
-            while (readPickup.readLine() != null) linesDeliver++;
-            readPickup.close();
-                
-            System.out.println("   PickUpID         Date            Time        Customer Name");
-            System.out.println("   ========         =========       =====       =============");
-                       
-            Scanner read  = new Scanner(deliver);
-            for (int i=0;i<linesDeliver;i++){
-                String str = read.nextLine();
-                String[] cols = str.split(",");
-                if (cols[1].equals(pickupID)){
-                    System.out.println(number + ". " + cols[1] + "           " + cols[0]+ "      " + cols[2]+"       " + cols[3]);  
-                    number++;
+        if(exist){
+            //count number of records
+                BufferedReader readPickup = new BufferedReader(new FileReader("pickup.txt"));
+                int totalPickup = 0;
+                while (readPickup.readLine() != null) totalPickup++;
+                readPickup.close();
+
+            //calculate the latest pickupID
+            Scanner read  = new Scanner(pickup);
+                for (int i=0;i<totalPickup;i++){
+                    String str = read.nextLine();
+                    String[] cols = str.split(",");
+                    if (!cols[2].equals(pickupID)){
+                        pickupCount++;
+                    }
                 }
-            }
             read.close();
-            System.out.println("\n");
-            pickupmenu();
+
+                //create pickupID
+                if (pickupCount <9){
+                    pickupID = "P0000"+(pickupCount+1);
+                }
+                else if (pickupCount <99){
+                    pickupID = "P0000"+(pickupCount+1);
+                }
+                else if (pickupCount < 999){
+                    pickupID = "P0000"+(pickupCount+1);
+                }  
+                else if (pickupCount < 9999){
+                    pickupID = "P0000"+(pickupCount+1);
+                }
+        }
+        else
+            pickupID = "P00001";
+        
+        while(blankInput){
+            System.out.print("\nPickupID: "+ pickupID);
+            System.out.print("\nDate(DD-MM-YYYY): ");
+            String date = sc.nextLine();
+            System.out.print("Customer name: ");
+            String name = sc.nextLine();
+            
+            if(name.equals("")||date.equals(""))
+                System.out.println("Please do not leave any input field blank.");
+            else{               
+                blankInput = false;
+                Writer output;
+                    output = new BufferedWriter(new FileWriter("pickup.txt",true));
+                    if (!exist){
+                        output.append(date+ ","+pickupID+ ","+ ","+time +","+name);
+                    }
+                    else{
+                    output.append(System.lineSeparator()+date+ ","+pickupID+ ","+ ","+time +","+name);
+                    }
+                    output.close();
+                    
+                    System.out.println("\nNew pickupID added!\n");
+                    pickupmenu();
+            }
+        }
     }
-    public static void timestamp() throws IOException{
+    public static void timestamp(String formattedString) throws IOException{
         Scanner sc = new Scanner(System.in);
         Pickup p1 = new Pickup();
         
-        System.out.print("Please enter Pickup ID: ");
-        String pickupID = sc.nextLine();
+        System.out.print("Please enter Customer Name: ");
+        String custName = sc.nextLine();
         
         //count number of records in pickup.txt
         BufferedReader readPickup = new BufferedReader(new FileReader("pickup.txt"));
-        int linesCatalog = 0;
-        while (readPickup.readLine() != null) linesCatalog++;
+        int pickupline = 0;
+        while (readPickup.readLine() != null) pickupline++;
         readPickup.close();
                        
-        //find the order that matached
+        //find the customer name
         Scanner read  = new Scanner(new File("pickup.txt"));
-        for (int i=0;i<linesCatalog;i++){
+        for (int i=0;i<pickupline;i++){
             String str = read.nextLine();
             String[] cols = str.split(",");
-            if (cols[1].equals(pickupID)){
-                p1.setPickupID(pickupID);
+            if (cols[3].equals(custName)){
+                p1.setPickupID(cols[1]);
                 p1.setPickupDate(cols[0]);
                 p1.setTime(cols[2]);
-                p1.setCustomerName(cols[3]);
+                p1.setCustomerName(custName);
             }
             else{
                 Writer output;
@@ -1536,13 +1602,13 @@ public class ASD {
         }
         read.close();
         
-        if(p1.getPickupID() == null){
-            System.out.println("The pickup ID you entered is not exist, please try again.\n");
+        if(p1.getCustomerName() == null){
+            System.out.println("There are no record for the customer, please try again.\n");
             File tempFile = new File("temp.txt");
             tempFile.delete();
-            timestamp();
+            timestamp(formattedString);  
         }
-        
+
         System.out.println("\nPickupID Information");
         System.out.println("====================");
         System.out.print("Pickup ID: ");
