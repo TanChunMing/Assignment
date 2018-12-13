@@ -18,6 +18,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.time.ZoneId;
 
 /**
  *
@@ -52,7 +54,7 @@ public class ASD {
         mainMenu();
     }
 
-    public static void updateArray() throws IOException {
+        public static void updateArray() throws IOException{
         //clear item in array
         arrayFlower.clear();
         arrayFlowerPrice.clear();
@@ -65,48 +67,47 @@ public class ASD {
         arrayArrangementQuantity.clear();
 
         //load data into arrays
-        Scanner sc = new Scanner(System.in);
         File catalog = new File("catalog.txt");
         boolean exist = catalog.exists();
-
-        if (exist) {
+        
+        if(exist){
             //count number of records in catalog.txt
             BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
             int linesCatalog = 0;
-            while (readCatalog.readLine() != null) {
-                linesCatalog++;
-            }
+            while (readCatalog.readLine() != null) linesCatalog++;
             readCatalog.close();
-
+            
             //add item to different arrayList based on their type
-            Scanner read = new Scanner(catalog);
-            for (int i = 0; i < linesCatalog; i++) {
+            Scanner read  = new Scanner(catalog);
+            for (int i=0;i<linesCatalog;i++){
                 String str = read.nextLine();
-                String[] cols = str.split(";");
-                if (cols[4].equals("flower")) {
-                    arrayFlower.add(cols[1]);
-                    arrayFlowerPrice.add(cols[2]);
-                    arrayFlowerQuantity.add(cols[3]);
-                }
-                if (cols[4].equals("bouquet")) {
-                    arrayBouquet.add(cols[1]);
-                    arrayBouquetPrice.add(cols[2]);
-                    arrayBouquetQuantity.add(cols[3]);
-                }
-                if (cols[4].equals("arrangement")) {
-                    arrayArrangement.add(cols[1]);
-                    arrayArrangementPrice.add(cols[2]);
-                    arrayArrangementQuantity.add(cols[3]);
+                if (!str.equals("")){
+                    String[] cols = str.split(";");
+                    if (cols[4].equals("flower")){
+                        arrayFlower.add(cols[1]);
+                        arrayFlowerPrice.add(cols[2]);
+                        arrayFlowerQuantity.add(cols[3]);
+                    }
+                    if (cols[4].equals("bouquet")){
+                        arrayBouquet.add(cols[1]);
+                        arrayBouquetPrice.add(cols[2]);
+                        arrayBouquetQuantity.add(cols[3]);
+                    }
+                    if (cols[4].equals("arrangement")){
+                        arrayArrangement.add(cols[1]);
+                        arrayArrangementPrice.add(cols[2]);
+                        arrayArrangementQuantity.add(cols[3]);
+                    }
                 }
             }
             read.close();
         }
     }
-
-    public static void mainMenu() throws IOException {
+    
+    public static void mainMenu() throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
-
+       
         System.out.println("Fiore Flowershop");
         System.out.println("================");
         System.out.println("1. Catalog Maintenance");
@@ -114,264 +115,331 @@ public class ASD {
         System.out.println("3. Catalog Order");
         System.out.println("4. Order Pickup/Delivery and Consumer Payment Management");
         System.out.println("\n0. Exit");
-
-        while (invalidInput) {
+        
+        while(invalidInput){
             System.out.print("\nPlease select a choice: ");
             String selection = sc.next();
             sc.nextLine();
-
-            if (selection.equals("1")) {
-                invalidInput = false;
+            
+            if (selection.equals("1")){
+                invalidInput=false;
                 module1();
-            } else if (selection.equals("2")) {
-                invalidInput = false;
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
                 module2();
-            } else if (selection.equals("3")) {
-                invalidInput = false;
+            }
+            else if (selection.equals("3")){
+                invalidInput=false;
                 module3();
-            } else if (selection.equals("4")) {
-                invalidInput = false;
+            }
+            else if (selection.equals("4")){
+                invalidInput=false;
                 module4();
-            } else if (selection.equals("0")) {
-                invalidInput = false;
+            }
+            else if (selection.equals("0")){
+                invalidInput=false;
                 System.exit(0);
-            } else {
+            }
+            else{
                 System.out.println("Invalid Input. Please enter only 1, 2, 3, 4 or 0");
             }
         }
     }
-
-    public static void module1() throws IOException {
+    public static void module1() throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
-
+        
+        System.out.println("Options");
+        System.out.println("=======");
+        System.out.println("1. View Catalog");
+        System.out.println("2. View Monthly Promotion");
+        System.out.println("\n0. Back to Main Menu");
+        
+        while(invalidInput){
+            System.out.print("\nPlease select a choice: ");
+            String selection = sc.next();
+            sc.nextLine();
+            
+            if (selection.equals("1")){
+                invalidInput=false;
+                viewProduct();
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
+                monthlyPromotion();
+            }
+            else if (selection.equals("0")){
+                invalidInput=false;
+                mainMenu();
+            }
+            else{
+                System.out.println("Invalid Input. Please enter only 1, 2 or 0");
+            }
+        }
+    }
+    
+    public static void viewProduct() throws IOException{
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        
         System.out.println("Product Type");
         System.out.println("============");
         System.out.println("1. Fresh Flower");
         System.out.println("2. Bouquet");
         System.out.println("3. Floral Arrangement");
-        System.out.println("\n0. Back");
-
-        while (invalidInput) {
+        System.out.println("\n0. Back to Catalog Maintenance");
+        
+        while(invalidInput){
             System.out.print("\nPlease select a choice: ");
             String selection = sc.next();
             sc.nextLine();
-
-            if (selection.equals("1")) {
-                invalidInput = false;
+            
+            if (selection.equals("1")){
+                invalidInput=false;
                 catalog("flower");
-            } else if (selection.equals("2")) {
-                invalidInput = false;
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
                 catalog("bouquet");
-            } else if (selection.equals("3")) {
-                invalidInput = false;
+            }
+            else if (selection.equals("3")){
+                invalidInput=false;
                 catalog("arrangement");
-            } else if (selection.equals("0")) {
-                invalidInput = false;
-                mainMenu();
-            } else {
+            }
+            else if (selection.equals("0")){
+                invalidInput=false;
+                module1();
+            }
+            else{
                 System.out.println("Invalid Input. Please enter only 1, 2, 3 or 0");
             }
         }
     }
-
-    public static void catalog(String type) throws IOException {
+    
+    public static void catalog(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
-
+        String outOfStock = "";
+        
         File catalog = new File("catalog.txt");
         boolean exist = catalog.exists();
-
+        
         //check if catalog file exist
-        if (!exist) {
+        if (!exist){
             System.out.println("--------------------------");
             System.out.println("|                        |");
             System.out.println("|    Catalog is empty    |");
             System.out.println("|                        |");
             System.out.println("--------------------------");
-        } else {
+        }
+        else{
             //count number of records in catalog.txt
             BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
             int linesCatalog = 0;
             int number = 1;
-            while (readCatalog.readLine() != null) {
-                linesCatalog++;
-            }
+            while (readCatalog.readLine() != null) linesCatalog++;
             readCatalog.close();
-
+                
             System.out.println("   Product ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
             System.out.println("   ==========\t\t============\t\t=========\t=================");
-
-            //find the items with the flower as its type
-            Scanner read = new Scanner(catalog);
-            for (int i = 0; i < linesCatalog; i++) {
+                       
+            //find the items with the type selected by the user
+            Scanner read  = new Scanner(catalog);
+            for (int i=0;i<linesCatalog;i++){
                 String str = read.nextLine();
-                String[] cols = str.split(";");
-                if (cols[4].equals(type)) {
-                    System.out.println(number + ". " + cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3]);
-                    number++;
+                if (!str.equals("")){
+                    String[] cols = str.split(";");
+                    if (cols[4].equals(type)){
+                        System.out.println(number + ". " + cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3]);
+                        number++;
+
+                        //display the items with quantity less than 3 in stock
+                        if(Integer.parseInt(cols[3]) <= 3){
+                            outOfStock += "** \"" + cols[1] + "\" is less in stock, which is " + cols[3] + " item left.\n";
+                        }
+                    }
                 }
             }
             read.close();
         }
-
+        
+        //display the details of items that are out of stock if the string is not empty
+        if (!outOfStock.equals("")){
+            System.out.println("\n" + outOfStock);
+        }
+        
         System.out.println("\n1. Add new product");
         System.out.println("2. Edit existing product");
         System.out.println("3. Delete existing product");
-        System.out.println("\n0. Back");
-
-        while (invalidInput) {
+        System.out.println("\n0. Back to Product Type Selection");
+                
+        while(invalidInput){
             System.out.print("\nPlease select a choice: ");
             String selection = sc.next();
             sc.nextLine();
-
-            if (selection.equals("1")) {
-                invalidInput = false;
+            
+            if (selection.equals("1")){
+                invalidInput=false;
                 addNewProduct(type);
-            } else if (selection.equals("2")) {
-                invalidInput = false;
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
                 updateProduct(type);
-            } else if (selection.equals("3")) {
-                invalidInput = false;
+            }
+            else if (selection.equals("3")){
+                invalidInput=false;
                 deleteProduct(type);
-            } else if (selection.equals("0")) {
-                invalidInput = false;
-                module1();
-            } else {
+            }
+            else if (selection.equals("0")){
+                invalidInput=false;
+                viewProduct();
+            }
+            else{
                 System.out.println("Invalid Input. Please enter only 1, 2, 3 or 0");
             }
         }
     }
-
-    public static void addNewProduct(String type) throws IOException {
+    
+    public static void addNewProduct(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         boolean blankInput = true;
         File catalog = new File("catalog.txt");
         boolean exist = catalog.exists();
         String productID;
         int productCount = 0;
-
+        
         //determine first letter of productID
-        if (type.equals("flower")) {
-            productID = "F";
-        } else if (type.equals("bouquet")) {
-            productID = "B";
-        } else {
-            productID = "A";
-        }
-
-        if (exist) {
+            if (type.equals("flower"))
+                productID = "F";
+            else if(type.equals("bouquet"))
+                productID = "B";
+            else
+                productID = "A";
+            
+        if(exist){
             //count number of records in catalog.txt
-            BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
-            int linesCatalog = 0;
-            while (readCatalog.readLine() != null) {
-                linesCatalog++;
-            }
-            readCatalog.close();
+                BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+                int linesCatalog = 0;
+                while (readCatalog.readLine() != null) linesCatalog++;
+                readCatalog.close();
 
-            //calculate linesCatalog with particular product type
-            Scanner read = new Scanner(catalog);
-            for (int i = 0; i < linesCatalog; i++) {
-                String str = read.nextLine();
-                String[] cols = str.split(";");
-                if (cols[4].equals(type)) {
-                    productCount++;
+            //calculate amount of particular product type
+            Scanner read  = new Scanner(catalog);
+                for (int i=0;i<linesCatalog;i++){
+                    String str = read.nextLine();
+                    if (!str.equals("")){
+                        String[] cols = str.split(";");
+                        if (cols[4].equals(type)){
+                            productCount++;
+                        }
+                    }
                 }
-            }
             read.close();
 
-            //create productID
-            if (productCount < 9) {
-                productID = productID + "0000" + (productCount + 1);
-            } else if (productCount < 99) {
-                productID = productID + "000" + (productCount + 1);
-            } else if (productCount < 999) {
-                productID = productID + "00" + (productCount + 1);
-            } else if (productCount < 9999) {
-                productID = productID + "0" + (productCount + 1);
-            } else {
-                productID = productID + (productCount + 1);
-            }
-            productID = checkID(productID, productCount);
-        } else {
-            productID = productID + "00001";
+                //create productID
+                if (productCount <9){
+                    productID = productID + "0000"+(productCount+1);
+                }
+                else if (productCount <99){
+                    productID = productID + "000"+(productCount+1);
+                }
+                else if (productCount < 999){
+                    productID = productID + "00"+(productCount+1);
+                }  
+                else if (productCount < 9999){
+                    productID = productID + "0"+(productCount+1);
+                }
+                else{
+                    productID = productID +(productCount+1);
+                }
+                productID = checkID(productID, productCount);
         }
-
-        while (blankInput) {
+        else
+            productID = productID + "00001";
+        
+        while(blankInput){
             System.out.print("Product Name: ");
             String name = sc.nextLine();
             System.out.print("Price: ");
             String price = sc.nextLine();
             System.out.print("Quantity in stock: ");
             String quantity = sc.nextLine();
-
-            if (name.equals("") || price.equals("")) {
+            
+            if(name.equals("")||price.equals(""))
                 System.out.println("Please do not leave any input field blank.");
-            } else if (!isInteger(price)) {
+            else if(!isInteger(price)){
                 System.out.println("Price entered is not integer.");
-            } else if (!isInteger(quantity)) {
+            }
+            else if(!isInteger(quantity)){
                 System.out.println("Quantity entered is not integer.");
-            } else {
+            }
+            else{               
                 blankInput = false;
-
+                
+                //write the new line of data into the catalog.txt
                 Writer output;
-                output = new BufferedWriter(new FileWriter("catalog.txt", true));
-                if (!exist) {
-                    output.append(productID + ";" + name + ";" + price + ";" + quantity + ";" + type);
-                } else {
-                    output.append(System.lineSeparator() + productID + ";" + name + ";" + price + ";" + quantity + ";" + type);
-                }
-                output.close();
-
-                System.out.println("\nNew product added!");
-                module1();
+                    output = new BufferedWriter(new FileWriter("catalog.txt",true));
+                    if (!exist){
+                        output.append(productID+ ";"+name+ ";"+price+ ";"+quantity +";"+type);
+                    }
+                    else{
+                        output.append(System.lineSeparator()+productID+ ";"+name+ ";"+price+ ";"+quantity +";"+type);
+                    }
+                    output.close();
+                    
+                    System.out.println("\nNew product added!");
+                    viewProduct();
             }
         }
     }
-
-    public static void updateProduct(String type) throws IOException {
+    
+    public static void updateProduct(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         Product p1 = new Product();
         boolean invalidInput = true;
-
+        
         System.out.print("Please enter Product ID: ");
         String productID = sc.nextLine();
-
+        
         //count number of records in catalog.txt
         BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
         int linesCatalog = 0;
-        while (readCatalog.readLine() != null) {
-            linesCatalog++;
-        }
+        while (readCatalog.readLine() != null) linesCatalog++;
         readCatalog.close();
-
-        //find the items with the flower as its type and the productID matched
-        Scanner read = new Scanner(new File("catalog.txt"));
-        for (int i = 0; i < linesCatalog; i++) {
+                       
+        //find the items with selected type and the productID matched
+        Scanner read  = new Scanner(new File("catalog.txt"));
+        for (int i=0;i<linesCatalog;i++){
             String str = read.nextLine();
-            String[] cols = str.split(";");
-            if (cols[0].equals(productID) && cols[4].equals(type)) {
-                p1.setProductID(productID);
-                p1.setProductName(cols[1]);
-                p1.setPrice(cols[2]);
-                p1.setQuantity(cols[3]);
-                p1.setType(cols[4]);
-            } else {
-                Writer output;
-                output = new BufferedWriter(new FileWriter(new File("temp.txt"), true));
-                output.append(str + System.lineSeparator());
-                output.close();
+            if (!str.equals("")){
+                String[] cols = str.split(";");
+                if (cols[0].equals(productID)&&cols[4].equals(type)){
+                    p1.setProductID(productID);
+                    p1.setProductName(cols[1]);
+                    p1.setPrice(cols[2]);
+                    p1.setQuantity(cols[3]);
+                    p1.setType(cols[4]);
+                }
+                else{
+                    //items that are not matched are saved into temp.txt
+                    Writer output;
+                    output = new BufferedWriter(new FileWriter(new File("temp.txt"),true));
+                    output.append(str+System.lineSeparator());
+                    output.close(); 
+                }
             }
         }
         read.close();
-
-        if (p1.getProductID() == null) {
+        
+        //check if productID entered exist in catalog.txt
+        if(p1.getProductID() == null){
             System.out.println("The product ID you entered is not exist, please try again.\n");
             File tempFile = new File("temp.txt");
             tempFile.delete();
             catalog(type);
         }
-
+        
         System.out.println("\nProduct Information");
         System.out.println("===================");
         System.out.print("Product ID: ");
@@ -384,180 +452,705 @@ public class ASD {
         System.out.print(p1.getQuantity());
         System.out.print("\nType of Product: ");
         System.out.print(p1.getType());
-
+        
         System.out.println("\n\nOptions");
         System.out.println("=======");
         System.out.println("1. Change Product Name");
         System.out.println("2. Change Price");
         System.out.println("3. Change Quantity in Stock");
         System.out.println("\n0. Back");
-
-        while (invalidInput) {
+        
+        while(invalidInput){
             System.out.print("\nPlease select a choice: ");
             String selection = sc.next();
             sc.nextLine();
-
-            if (selection.equals("1")) {
-                invalidInput = false;
+            
+            if (selection.equals("1")){
+                invalidInput=false;
                 System.out.print("New Product Name: ");
                 p1.setProductName(sc.nextLine());
-            } else if (selection.equals("2")) {
-                invalidInput = false;
-                System.out.print("New Price: ");
-                p1.setPrice(sc.nextLine());
-            } else if (selection.equals("3")) {
-                invalidInput = false;
-                System.out.print("New Quantity in Stock: ");
-                p1.setQuantity(sc.nextLine());
-            } else if (selection.equals("0")) {
-                invalidInput = false;
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
+                String price;
+                do{
+                    System.out.print("New Price: ");
+                    price = sc.nextLine();
+                
+                    if(isInteger(price))
+                        p1.setPrice(price);
+                    else
+                        System.out.println("Please enter a valid price.");
+                }while(!isInteger(price));
+            }
+            else if (selection.equals("3")){
+                invalidInput=false;
+                String quantity;
+                do{
+                    System.out.print("New Quantity in Stock: ");
+                    quantity = sc.nextLine();
+                    
+                    if(isInteger(quantity))
+                        p1.setQuantity(quantity);
+                    else
+                        System.out.println("Please enter a valid quantity.");
+                }while(!isInteger(quantity));
+            }
+            else if (selection.equals("0")){
+                invalidInput=false;
                 catalog(type);
-            } else {
+            }
+            else{
                 System.out.println("Invalid Input. Please enter only 1, 2, 3 or 0");
             }
         }
         System.out.println("\nUpdate success!");
-
+        
+        //save the new line of updated data into temp.txt
         Writer output;
-        output = new BufferedWriter(new FileWriter(new File("temp.txt"), true));
+        output = new BufferedWriter(new FileWriter(new File("temp.txt"),true));
         output.append(p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getPrice() + ";" + p1.getQuantity() + ";" + p1.getType());
-        output.close();
-
+        output.close(); 
+        
+        //delete the original catalog.txt and rename temp.txt to catalog.txt
         File originalFile = new File("catalog.txt");
         originalFile.delete();
-
+        
         File tempFile = new File("temp.txt");
         tempFile.renameTo(originalFile);
-
+        
         updateArray();
-
+        
         catalog(type);
     }
-
-    public static void deleteProduct(String type) throws IOException {
+    
+    public static void deleteProduct(String type) throws IOException{
         Scanner sc = new Scanner(System.in);
         Product p1 = new Product();
         boolean invalidInput = true;
-
+        
         System.out.print("Please enter Product ID: ");
         String productID = sc.nextLine();
-
+        
         //count number of records in catalog.txt
         BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
         int linesCatalog = 0;
-        while (readCatalog.readLine() != null) {
-            linesCatalog++;
-        }
+        while (readCatalog.readLine() != null) linesCatalog++;
         readCatalog.close();
-
-        //find the items with the flower as its type but the productID not matched
-        Scanner read = new Scanner(new File("catalog.txt"));
-        for (int i = 0; i < linesCatalog; i++) {
+                       
+        //copy lines that not matched with the productID and the selected type into temp.txt
+        Scanner read  = new Scanner(new File("catalog.txt"));
+        for (int i=0;i<linesCatalog;i++){
             String str = read.nextLine();
-            String[] cols = str.split(";");
-            if (cols[0].equals(productID) && cols[4].equals(type)) {
-                p1.setProductID(productID);
-                p1.setProductName(cols[1]);
-                p1.setPrice(cols[2]);
-                p1.setQuantity(cols[3]);
-                p1.setType(cols[4]);
-            } else {
-                Writer output;
-                output = new BufferedWriter(new FileWriter(new File("temp.txt"), true));
-                if (read.hasNextLine()) {
-                    output.append(str + System.lineSeparator());
-                    output.close();
-                } else {
-                    output.append(str);
-                    output.close();
+            if (!str.equals("")){
+                String[] cols = str.split(";");
+                if (cols[0].equals(productID)&&cols[4].equals(type)){
+                    p1.setProductID(productID);
+                    p1.setProductName(cols[1]);
+                    p1.setPrice(cols[2]);
+                    p1.setQuantity(cols[3]);
+                    p1.setType(cols[4]);
+                }
+                else{
+                    Writer output;
+                    output = new BufferedWriter(new FileWriter(new File("temp.txt"),true));
+                    if(read.hasNextLine()){
+                        output.append(str+System.lineSeparator());
+                        output.close(); 
+                    }
+                    else{
+                        output.append(str);
+                        output.close(); 
+                    }
                 }
             }
         }
         read.close();
 
-        if (p1.getProductID() == null) {
+        if(p1.getProductID() == null){
             System.out.println("The product ID you entered is not exist, please try again.\n");
             File tempFile = new File("temp.txt");
             tempFile.delete();
             catalog(type);
         }
-
-        while (invalidInput) {
-            System.out.println("Do you really want to delete " + p1.getProductID() + ", " + p1.getProductName() + "?(Please enter Y or N)");
+        
+        while (invalidInput){
+            System.out.print("Do you really want to delete " + p1.getProductID() + ", " + p1.getProductName() + "?(Please enter Y or N)" );
             String selection = sc.nextLine();
 
-            if (selection.equals("Y") || selection.equals("y")) {
-                invalidInput = false;
+            if(selection.equals("Y")||selection.equals("y")){
+                invalidInput=false;
                 File originalFile = new File("catalog.txt");
                 originalFile.delete();
 
                 File tempFile = new File("temp.txt");
                 tempFile.renameTo(originalFile);
-
-                System.out.println(p1.getProductID() + ", " + p1.getProductName() + " is deleted.");
-            } else if (selection.equals("N") || selection.equals("n")) {
-                invalidInput = false;
+                
+                System.out.println(p1.getProductID() + ", " + p1.getProductName() + " is deleted.\n");
+            }
+            else if(selection.equals("N") || selection.equals("n")){
+                invalidInput=false;
                 File tempFile = new File("temp.txt");
                 tempFile.delete();
-            } else {
+                
+                System.out.println("\n");
+            }  
+            else{
                 System.out.println("Invalid input. Please enter only Y or N.");
             }
         }
         updateArray();
-
+        
         catalog(type);
     }
-
-    private static String checkID(String productID, int productCount) throws IOException {
+    
+    private static String checkID(String productID, int productCount) throws IOException{
         String ID = productID;
-
+        
+        //count number of records in catalog.txt
+            BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+            int linesCatalog = 0;
+            while (readCatalog.readLine() != null) linesCatalog++;
+            readCatalog.close();
+            
+            //find whether the productID is exist in catalog.txt
+            //if exist, the productID will be increased by one
+            //call this method again to check again
+            Scanner read  = new Scanner(new File("catalog.txt"));
+            for (int i=0;i<linesCatalog;i++){
+                String str = read.nextLine();
+                if (!str.equals("")){
+                    String[] cols = str.split(";");
+                    if (cols[0].equals(ID)){
+                        productCount++;
+                        if (productCount <9){
+                            ID = productID.charAt(0) + "0000"+(productCount+1);
+                        }
+                        else if (productCount <99){
+                            ID = productID.charAt(0) + "000"+(productCount+1);
+                        }
+                        else if (productCount < 999){
+                            ID = productID.charAt(0) + "00"+(productCount+1);
+                        }  
+                        else if (productCount < 9999){
+                            ID = productID.charAt(0) + "0"+(productCount+1);
+                        }
+                        checkID(ID, productCount);
+                    }
+                }
+            }
+            read.close();
+            
+            return ID;
+    }
+    
+    private static boolean isInteger(String str){
+        boolean result = false;
+        
+        //check whether the string entered is integer
+        for(int i=0; i<str.length();i++){
+            if(!Character.isDigit(str.charAt(i))){
+                result = false;
+                break;
+            }
+            else
+                result=true;
+        }
+        
+        return result;
+    }
+    
+    public static void monthlyPromotion() throws IOException{
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        
+        System.out.println("Options");
+        System.out.println("=======");
+        System.out.println("1. View Past Monthly Promotion");
+        System.out.println("2. Add New Monthly Promotion Catalog");
+        System.out.println("\n0. Back to Catalog Maintenance");
+        
+        while(invalidInput){
+            System.out.print("\nPlease select a choice: ");
+            String selection = sc.next();
+            sc.nextLine();
+            
+            if (selection.equals("1")){
+                invalidInput=false;
+                viewMonthlyPromotion();
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
+                addMonthlyPromotion();
+            }
+            else if (selection.equals("0")){
+                invalidInput=false;
+                module1();
+            }
+            else{
+                System.out.println("Invalid Input. Please enter only 1, 2 or 0");
+            }
+        }
+    }
+    
+    public static void viewMonthlyPromotion() throws IOException{
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        String flower ="";
+        String bouquet = "";
+        String arrangement = "";
+        String month = "";
+        String year = "";
+        
+        while (invalidInput){
+            System.out.print("Enter Month (digit): ");
+            month = sc.nextLine();
+            System.out.print("Enter year (digit): ");
+            year = sc.nextLine();
+            
+            //check if the month and year entered are both integer
+            if(!isInteger(month) || !isInteger(year))
+                System.out.println("\nPlease enter only digit for month and year.\n");
+            //check if the month entered is between 1 to 12
+            else if(Integer.parseInt(month)<1 || Integer.parseInt(month) > 12)
+                System.out.println("\nPlease enter a valid month.\n");
+            else
+                invalidInput = false;
+        }
+        
+        //count number of records in promotion.txt
+        BufferedReader readPromotion = new BufferedReader(new FileReader("promotion.txt"));
+        int linesPromotion = 0;
+        while (readPromotion.readLine() != null) linesPromotion++;
+        readPromotion.close();
+        
         //count number of records in catalog.txt
         BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
         int linesCatalog = 0;
-        while (readCatalog.readLine() != null) {
-            linesCatalog++;
-        }
+        while (readCatalog.readLine() != null) linesCatalog++;
         readCatalog.close();
-
-        //find the items with the flower as its type
-        Scanner read = new Scanner(new File("catalog.txt"));
-        for (int i = 0; i < linesCatalog; i++) {
+        
+        System.out.println("\nPromotion for " + month(month) + " " + year + "\n");
+        System.out.println("Product ID\tProduct Name\t\tOriginal Price(RM)\tDiscount Rate(%)\tDiscounted Price(RM)");
+        System.out.println("==========\t============\t\t==================\t================\t====================");
+                       
+        //list the promotion items based on month and year entered
+        Scanner read  = new Scanner(new File("promotion.txt"));
+        for (int i=0;i<linesPromotion;i++){
             String str = read.nextLine();
-            String[] cols = str.split(";");
-            if (cols[0].equals(ID)) {
-                productCount++;
-                if (productCount < 9) {
-                    ID = productID.charAt(0) + "0000" + (productCount + 1);
-                } else if (productCount < 99) {
-                    ID = productID.charAt(0) + "000" + (productCount + 1);
-                } else if (productCount < 999) {
-                    ID = productID.charAt(0) + "00" + (productCount + 1);
-                } else if (productCount < 9999) {
-                    ID = productID.charAt(0) + "0" + (productCount + 1);
+            if (!str.equals("")){
+                String[] cols = str.split(";");
+                if (cols[3].equals(month) && cols[4].equals(year)){
+                    Scanner read1  = new Scanner(new File("catalog.txt"));
+                    for (int j=0;j<linesCatalog;j++){
+                        String str1 = read1.nextLine();
+                        String[] cols1 = str1.split(";");
+                        if (cols[0].equals(cols1[0])){ 
+                            //arrange items according to product type
+                            if (cols[0].charAt(0)=='F')
+                                flower += cols1[0] + "\t\t" + cols1[1] + "\t\t" + cols1[2] + "\t\t\t" + cols[2] + "\t\t\t" + cols[1] + "\n";
+                            else if(cols[0].charAt(0)=='B')
+                                bouquet += cols1[0] + "\t\t" + cols1[1] + "\t\t" + cols1[2] + "\t\t\t" + cols[2] + "\t\t\t" + cols[1] + "\n";
+                            else
+                                arrangement += cols1[0] + "\t\t" + cols1[1] + "\t\t" + cols1[2] + "\t\t\t" + cols[2] + "\t\t\t" + cols[1] + "\n";
+                            break;
+                        }
+                    }
+                    read1.close();
                 }
-                checkID(ID, productCount);
+            }
+        }
+        read.close();
+        
+        //display flower, bouquet, or arrangement string if not empty
+        if (!flower.equals("")){
+            System.out.println("----------");
+            System.out.println("| FLOWER |");
+            System.out.println("----------");
+            System.out.println(flower);
+        }
+        if (!bouquet.equals("")){
+            System.out.println("-----------");
+            System.out.println("| BOUQUET |");
+            System.out.println("-----------");
+            System.out.println(bouquet);
+        }
+        if (!arrangement.equals("")){
+            System.out.println("--------------");
+            System.out.println("| ARRANGEMENT |");
+            System.out.println("--------------");
+            System.out.println(arrangement);
+        }
+
+        monthlyPromotion();
+    }
+    
+    private static String month(String month){
+        String str="";
+        
+        //return month name based on the integer number of month entered by user
+        switch(month){
+            case "1": str = "January";
+            break;
+            case "2": str = "February";
+            break;
+            case "3": str = "March";
+            break;
+            case "4": str = "April";
+            break;
+            case "5": str = "May";
+            break;
+            case "6": str = "June";
+            break;
+            case "7": str = "July";
+            break;
+            case "8": str = "August";
+            break;
+            case "9": str = "September";
+            break;
+            case "10": str = "October";
+            break;
+            case "11": str = "November";
+            break;
+            case "12": str = "December";
+            break;
+        }
+        
+        return str;
+    }
+    
+    public static void addMonthlyPromotion() throws IOException{
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        Queue<String> productID = new CircularLinkedQueue();
+        Queue<String> productName = new CircularLinkedQueue();
+        Queue<String> oriPrice = new CircularLinkedQueue();
+        Queue<String> discountRate = new CircularLinkedQueue();
+        Queue<String> disPrice = new CircularLinkedQueue();
+        
+        //get current month and year integer
+        Date date = new Date();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        int month = localDate.getMonthValue();
+        int year = localDate.getYear();
+        
+        System.out.println("\nNew Promotion List for " + month(Integer.toString(month)) + " " +  year);
+        System.out.println("   Product ID\t\tProduct Name\t\tOriginal Price(RM)\tDiscount Rate(%)\tDiscounted Price(RM)");
+        System.out.println("   ==========\t\t============\t\t==================\t================\t====================");
+        
+        //count number of records in promotion.txt
+        BufferedReader readPromotion = new BufferedReader(new FileReader("promotion.txt"));
+        int linesPromotion = 0;
+        while (readPromotion.readLine() != null) linesPromotion++;
+        readPromotion.close();
+        
+        //count number of records in catalog.txt
+        BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+        int linesCatalog = 0;
+        while (readCatalog.readLine() != null) linesCatalog++;
+        readCatalog.close();
+        
+        int number = 1;
+        //add the details into CircularLinkedQueue if the month and year of the records matched
+        Scanner read  = new Scanner(new File("promotion.txt"));
+        for (int i=0;i<linesPromotion;i++){
+            String str = read.nextLine();
+            if (!str.equals("")){
+                String[] cols = str.split(";");
+                if (cols[3].equals(Integer.toString(month)) && cols[4].equals(Integer.toString(year))){
+                    Scanner read1  = new Scanner(new File("catalog.txt"));
+                    for (int j=0;j<linesCatalog;j++){
+                        String str1 = read1.nextLine();
+                        if (!str1.equals("")){
+                            String[] cols1 = str1.split(";");
+                            if (cols[0].equals(cols1[0])){
+                                productID.enqueue(cols[0]);
+                                productName.enqueue(cols1[1]);
+                                oriPrice.enqueue(cols1[2]);
+                                discountRate.enqueue(cols[2]);
+                                disPrice.enqueue(cols[1]);
+                                break;
+                            }
+                        }
+                    }
+                    read1.close();
+                }
+            }
+        }
+        read.close();
+        
+        //display the data in CircularLinkedQueue
+        while(!productID.isEmpty()){
+            System.out.println(number + ". " + productID.dequeue() + "\t\t" + productName.dequeue() + "\t\t" + oriPrice.dequeue() + "\t\t\t" + discountRate.dequeue() + "\t\t\t" + disPrice.dequeue());
+            number++;
+        }
+        
+        System.out.println("\nOptions");
+        System.out.println("=======");
+        System.out.println("1. Add new promotion product");
+        System.out.println("2. Delete promotion product");
+        System.out.println("\n0. Exit");
+        
+        while(invalidInput){
+            System.out.print("\nPlease select a choice: ");
+            String selection = sc.next();
+            sc.nextLine();
+            
+            if (selection.equals("1")){
+                invalidInput=false;
+                addPromotionProduct(Integer.toString(month),Integer.toString(year));
+            }
+            else if(selection.equals("2")){
+                invalidInput=false;
+                deletePromotionProduct(Integer.toString(month),Integer.toString(year));
+            }
+            else if (selection.equals("0")){
+                invalidInput=false;
+                monthlyPromotion();
+            }
+            else{
+                System.out.println("Invalid Input. Please enter only 1, 2 or 0");
+            }
+        }
+    }
+    
+    public static void addPromotionProduct(String month, String year) throws IOException{
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        boolean invalidID = true;
+        double price = 0;
+        String flower ="";
+        String bouquet = "";
+        String arrangement = "";
+        String productID = "";
+        String discountRate = "";
+        
+        //count number of records in catalog.txt
+        BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+        int linesCatalog = 0;
+        while (readCatalog.readLine() != null) linesCatalog++;
+        readCatalog.close();
+                
+        System.out.println("Product ID\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
+        System.out.println("==========\t============\t\t=========\t=================");
+                       
+        //read all items out from the catalog.txt
+        Scanner read  = new Scanner(new File("catalog.txt"));
+        for (int i=0;i<linesCatalog;i++){
+            String str = read.nextLine();
+            if (!str.equals("")){
+                String[] cols = str.split(";");
+                //separate items based on their product type
+                if (cols[0].charAt(0) == 'F')
+                    flower += cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3] + "\n";
+                else if(cols[0].charAt(0) == 'B')
+                    bouquet += cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3] + "\n";
+                else
+                    arrangement += cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3] + "\n";
+            }
+        }
+        read.close();
+        
+        //display items in catalog
+        if (!flower.equals("")){
+            System.out.println("----------");
+            System.out.println("| FLOWER |");
+            System.out.println("----------");
+            System.out.println(flower);
+        }
+        if (!bouquet.equals("")){
+            System.out.println("-----------");
+            System.out.println("| BOUQUET |");
+            System.out.println("-----------");
+            System.out.println(bouquet);
+        }
+        if (!arrangement.equals("")){
+            System.out.println("--------------");
+            System.out.println("| ARRANGEMENT |");
+            System.out.println("--------------");
+            System.out.println(arrangement);
+        }
+        
+        while(invalidID){           
+            System.out.print("\nProduct ID: ");
+            productID = sc.nextLine();
+            do{
+                System.out.print("Discount Rate: ");
+                discountRate = sc.nextLine();
+                
+                //check if the discountRate entered is digit
+                if (!isInteger(discountRate)){
+                    System.out.println("Please enter a valid discount rate.");
+                }
+                
+            }while(!isInteger(discountRate));
+            
+            //read the price of the specific item based on productID
+            //this block of code also can check whether the productID is exist
+            //if the productID not exist, the invalidID will not become false
+            Scanner read1  = new Scanner(new File("catalog.txt"));
+            for (int i=0;i<linesCatalog;i++){
+                String str = read1.nextLine();
+                if (!str.equals("")){
+                    String[] cols = str.split(";");
+                    if (cols[0].equals(productID)){
+                        price = Double.parseDouble(cols[2]) * (1-(Double.parseDouble(discountRate)/100));
+                        invalidID = false;
+                    }
+                }
+            }
+            read1.close();
+        
+            if (invalidID)
+                System.out.println("The product ID you entered is not exist.Please enter again.");
+            
+            //count number of records in promotion.txt
+            BufferedReader readPromotion = new BufferedReader(new FileReader("promotion.txt"));
+            int linesPromotion = 0;
+            while (readPromotion.readLine() != null) linesPromotion++;
+            readPromotion.close();
+        
+            //search whether there is existing productID for the same month and year
+            Scanner read2  = new Scanner(new File("promotion.txt"));
+            for (int i=0;i<linesPromotion;i++){
+                String str = read2.nextLine();
+                if (!str.equals("")){
+                    String[] cols = str.split(";");
+                    if (cols[0].equals(productID)&&cols[3].equals(month)&&cols[4].equals(year)){
+                        System.out.println("The product ID you entered is already in the promotion list.");
+                        invalidID = false;
+                        addMonthlyPromotion();
+                    }
+                }
+            }
+            read2.close();
+        }
+        
+        //ask the user whether they want to add more item 
+        while(invalidInput){
+            System.out.print("\nDo you want to add more item in this promotion list? (Y or N): ");
+            String selection = sc.nextLine();
+            if (selection.equals("Y") || selection.equals("y")){
+                invalidInput = false;
+                    
+                    //add the records into promotion.txt
+                    Writer output;
+                    output = new BufferedWriter(new FileWriter("promotion.txt",true));
+                    if (!new File("promotion.txt").exists()){
+                        output.append(productID+ ";"+price+ ";"+discountRate+ ";"+month +";"+year);
+                    }
+                    else{
+                        output.append(System.lineSeparator()+productID+ ";"+price+ ";"+discountRate+ ";"+month +";"+year);
+                    }
+                    output.close();
+                    
+                    System.out.println("\nNew promotion product added!");
+                
+                //call the addPromotionProduct() again to add more items into promotion list
+                addPromotionProduct(month, year);
+            }
+            else if(selection.equals("N") || selection.equals("n")){
+                invalidInput = false;
+                
+                    //add the records into promotion.txt
+                    Writer output;
+                    output = new BufferedWriter(new FileWriter("promotion.txt",true));
+                    if (!new File("promotion.txt").exists()){
+                        output.append(productID+ ";"+Double.toString(price)+ ";"+discountRate+ ";"+month +";"+year);
+                    }
+                    else{
+                    output.append(System.lineSeparator()+productID+ ";"+Double.toString(price)+ ";"+discountRate+ ";"+month +";"+year);
+                    }
+                    output.close();
+                    
+                    System.out.println("\nNew promotion product added!");
+                
+                //return to last page which is addMonthlyPromotion()
+                addMonthlyPromotion();
+                
+            }
+            else
+                System.out.println("Invalid Input. Please enter only Y or N");
+        }
+    }
+    
+    public static void deletePromotionProduct(String month, String year) throws IOException{
+        Scanner sc = new Scanner(System.in);
+        Product p1 = new Product();
+        boolean invalidInput = true;
+        
+        System.out.print("Please enter Product ID: ");
+        String productID = sc.nextLine();
+        
+        //count number of records in promotion.txt
+        BufferedReader readPromotion = new BufferedReader(new FileReader("promotion.txt"));
+        int linesPromotion = 0;
+        while (readPromotion.readLine() != null) linesPromotion++;
+        readPromotion.close();
+                       
+        //find the items with month, year, and productID matched
+        //items that not matched will be copied to temp.txt
+        Scanner read  = new Scanner(new File("promotion.txt"));
+        for (int i=0;i<linesPromotion;i++){
+            String str = read.nextLine();
+            if (!str.equals("")){
+                String[] cols = str.split(";");
+                if (cols[3].equals(month)&&cols[4].equals(year)&&cols[0].equals(productID)){
+                    p1.setProductID(productID);
+                }
+                else{
+                    Writer output;
+                    output = new BufferedWriter(new FileWriter(new File("temp.txt"),true));
+                    if(read.hasNextLine()){
+                        output.append(str+System.lineSeparator());
+                        output.close(); 
+                    }
+                    else{
+                        output.append(str);
+                        output.close(); 
+                    }
+                }
             }
         }
         read.close();
 
-        return ID;
-    }
+        //productID not exist in promotion.txt, the temp.txt will be deleted to avoid system error
+        if(p1.getProductID() == null){
+            System.out.println("The product ID you entered is not exist, please try again.\n");
+            File tempFile = new File("temp.txt");
+            tempFile.delete();
+            addMonthlyPromotion();
+        }
+        
+        //ask for delete confirmation of selected item
+        while (invalidInput){
+            System.out.print("Do you really want to delete item " + p1.getProductID() + "?(Please enter Y or N)" );
+            String selection = sc.nextLine();
 
-    private static boolean isInteger(String str) {
-        boolean result = false;
+            if(selection.equals("Y")||selection.equals("y")){
+                invalidInput=false;
+                //delete original promotion.txt and rename temp.txt to promotion.txt
+                File originalFile = new File("promotion.txt");
+                originalFile.delete();
 
-        for (int i = 0; i < str.length(); i++) {
-            if (!Character.isDigit(str.charAt(i))) {
-                result = false;
-                break;
-            } else {
-                result = true;
+                File tempFile = new File("temp.txt");
+                tempFile.renameTo(originalFile);
+                
+                System.out.println("Item " + p1.getProductID() + " is deleted from monthly promotion list.");
+            }
+            else if(selection.equals("N") || selection.equals("n")){
+                //delete temp.txt
+                invalidInput=false;
+                File tempFile = new File("temp.txt");
+                tempFile.delete();
+            }  
+            else{
+                System.out.println("Invalid input. Please enter only Y or N.");
             }
         }
-
-        return result;
+        addMonthlyPromotion();
     }
-
+   
     public static void module2() throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;

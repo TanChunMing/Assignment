@@ -2,3 +2,7 @@ F00001;white rose;10;100;flower
 F00002;pink rose;10;100;flower
 B00001;4 rose bouquet;60;40;bouquet
 F00003;yellow rose;10;100;flower
+F00004;red rose;10;2;flower
+F00005;black rose;10;1;flower
+B00002;2 sunflower bouquet;45;3;bouquet
+F00006;sunflower;15;50;flower
