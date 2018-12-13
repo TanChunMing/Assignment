@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.time.ZoneId;
 
@@ -1857,8 +1856,9 @@ public class ASD {
 
         System.out.println("Order Pickup/Delivery and Consumer Payment Management");
         System.out.println("============");
-        System.out.println("1. Pickup List");
-        System.out.println("2. Deliver List");
+        System.out.println("1. Payment");
+        System.out.println("2. Pickup List");
+        System.out.println("3. Deliver List");
         System.out.println("0. Back");
 
         while (invalidInput) {
@@ -1868,19 +1868,66 @@ public class ASD {
 
             if (selection.equals("1")) {
                 invalidInput = false;
-                pickupmenu();
+                payment();
             } else if (selection.equals("2")) {
                 invalidInput = false;
+                pickupmenu();
+            } else if (selection.equals("3")) {
+                invalidInput = false;
                 delivermenu();
+                
             } else if (selection.equals("0")) {
                 invalidInput = false;
                 mainMenu();
-            } else {
-                System.out.println("Invalid Input. Please enter only 1, 2 and 0");
+                
+            }else {
+                System.out.println("Invalid Input. Please enter only 1, 2, 3 and 0");
             }
         }
     }
+    public static void payment() throws IOException {
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        //count number of records in order.txt
+        BufferedReader readOrder = new BufferedReader(new FileReader("order.txt"));
+        int linesOrder = 0;
+        while (readOrder.readLine() != null) {
+            linesOrder++;
+        }
+        readOrder.close();
+        
+        System.out.println("Consumer Payment");
+        System.out.println("================");
+        System.out.println("Please enter your name: ");
+        String name = sc.nextLine();
+        Scanner read = new Scanner(new File("order.txt"));
+        for (int i = 0; i < linesOrder; i++) {
+            String str = read.nextLine();
+            String[] cols = str.split(";");
+            if (cols[0].equals("a")) {
+                System.out.println("aaaa\n");
+        }
+            else{
+                System.out.println("There are no record for the customer, please try again.\n");
+        }
+        read.close();
 
+        while (invalidInput) {
+            System.out.print("\nPickup(P) or Delivery(D): ");
+            String selection = sc.next();
+            sc.nextLine();
+            if (selection.equals("P")||selection.equals("p")) {
+                invalidInput = false;
+                addpickup();
+            } else if (selection.equals("D")||selection.equals("d")) {
+                invalidInput = false;
+                adddeliver();
+            } else {
+                System.out.println("Invalid Input. Please enter only P for pickup or D for delivery");
+            }
+        }
+    }
+    }
     public static void delivermenu() throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
@@ -1891,8 +1938,6 @@ public class ASD {
         System.out.println("Deliver List");
         System.out.println("============");
         System.out.println("1. Check Today's Deliver List");
-        System.out.println("2. Add deliver list");
-        System.out.println("3. bbb");
         System.out.println("0. Back");
 
         while (invalidInput) {
@@ -1903,22 +1948,14 @@ public class ASD {
             if (selection.equals("1")) {
                 invalidInput = false;
                 deliver(formattedString);
-            } else if (selection.equals("2")) {
-                invalidInput = false;
-                adddeliver();
-            } else if (selection.equals("3")) {
-                invalidInput = false;
-
             } else if (selection.equals("0")) {
                 invalidInput = false;
                 module4();
             } else {
-                System.out.println("Invalid Input. Please enter only 1, 2, 3 and 0");
+                System.out.println("Invalid Input. Please enter only 1 and 0");
             }
         }
     }
-
-
     public static void deliver(String formattedString) throws IOException {
         arrayDeliver.clear();
         Scanner sc = new Scanner(System.in);
@@ -1979,8 +2016,8 @@ public class ASD {
         boolean exist = deliver.exists();
         String packageID = "D00001";
         int deliverCount = 1;
-
-        if (exist) {
+        String area = "0";
+;        if (exist) {
             //count number of records
             BufferedReader readDeliver = new BufferedReader(new FileReader("deliver.txt"));
             int totalRecord = 0;
@@ -2020,14 +2057,42 @@ public class ASD {
             String name = sc.nextLine();
             System.out.print("Date(DD-MM-YYYY): ");
             String date = sc.nextLine();
-            System.out.print("Area Code: ");
-            String area = sc.nextLine();
+            System.out.print("Postcode: ");
+            String postcode = sc.nextLine();
             System.out.print("Address: ");
             String address = sc.nextLine();
-
-            if (name.equals("") || date.equals("") || area.equals("") || address.equals("")) {
+            
+            if (date.equals("") || name.equals("") || address.equals("")) {
                 System.out.println("Please do not leave any input field blank.");
-            } else {
+            } 
+            else if(!isInteger(postcode)){
+                System.out.println("Postcode entered is not integer.");
+            }
+            else if(Integer.parseInt(postcode) < 50000 || Integer.parseInt(postcode) > 60000){
+                System.out.println("Out of delivery");
+            }
+            else {
+                if (Integer.parseInt(postcode) >= 50000 && Integer.parseInt(postcode) < 51000){
+                area = "1";
+            } else if(Integer.parseInt(postcode) >= 51000 && Integer.parseInt(postcode) < 52000){
+                area = "2";
+            }else if(Integer.parseInt(postcode) >= 52000 && Integer.parseInt(postcode) < 53000){
+                area = "3";
+            }else if(Integer.parseInt(postcode) >= 53000 && Integer.parseInt(postcode) < 54000){
+                area = "4";
+            }else if(Integer.parseInt(postcode) >= 54000 && Integer.parseInt(postcode) < 55000){
+                area = "5";
+            }else if(Integer.parseInt(postcode) >= 55000 && Integer.parseInt(postcode) < 56000){
+                area = "6";
+            }else if(Integer.parseInt(postcode) >= 560000 && Integer.parseInt(postcode) < 57000){
+                area = "7";
+            }else if(Integer.parseInt(postcode) >= 57000 && Integer.parseInt(postcode) < 58000){
+                area = "8";
+            }else if(Integer.parseInt(postcode) >= 58000 && Integer.parseInt(postcode) < 59000){
+                area = "9";
+            }else if(Integer.parseInt(postcode) >= 59000 && Integer.parseInt(postcode) < 60000){
+                area = "10";
+            }
                 blankInput = false;
                 Writer output;
                 output = new BufferedWriter(new FileWriter("deliver.txt", true));
@@ -2038,12 +2103,11 @@ public class ASD {
                 }
                 output.close();
 
-                System.out.println("\nNew packageID added!\n");
-                delivermenu();
+                System.out.println("\nYour have successfully done the payment!\n");
+                module4();
             }
         }
     }
-
     public static void pickupmenu() throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
@@ -2054,8 +2118,7 @@ public class ASD {
         System.out.println("Pickup List");
         System.out.println("============");
         System.out.println("1. Check Today's Pickup List");
-        System.out.println("2. Add New Pickup");
-        System.out.println("3. Update timestamp");
+        System.out.println("2. Update timestamp");
         System.out.println("0. Back");
 
         while (invalidInput) {
@@ -2066,22 +2129,17 @@ public class ASD {
             if (selection.equals("1")) {
                 invalidInput = false;
                 pickup(formattedString);
-            } else if (selection.equals("2")) {
-                invalidInput = false;
-                addpickup();
-            } else if (selection.equals("3")) {
+            }else if (selection.equals("2")) {
                 invalidInput = false;
                 timestamp(formattedString);
-
             } else if (selection.equals("0")) {
                 invalidInput = false;
                 module4();
             } else {
-                System.out.println("Invalid Input. Please enter only 1, 2, 3 and 0");
+                System.out.println("Invalid Input. Please enter only 1, 2 and 0");
             }
         }
     }
-
     public static void pickup(String formattedString) throws IOException {
         Scanner sc = new Scanner(System.in);
         File deliver = new File("pickup.txt");
@@ -2118,7 +2176,6 @@ public class ASD {
         System.out.println("\n");
         pickupmenu();
     }
-
     public static void addpickup() throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean blankInput = true;
@@ -2182,12 +2239,11 @@ public class ASD {
                 }
                 output.close();
 
-                System.out.println("\nNew pickupID added!\n");
-                pickupmenu();
+                System.out.println("\nYour have successfully done the payment!\n");
+                module4();
             }
         }
     }
-
     public static void timestamp(String formattedString) throws IOException {
         Scanner sc = new Scanner(System.in);
         Pickup p1 = new Pickup();
