@@ -1911,6 +1911,8 @@ public class ASD {
                 System.out.println("There are no record for the customer, please try again.\n");
         }
         read.close();
+        
+        
         //switch to addpickup/add delivery module
         while (invalidInput) {
             System.out.print("\nPickup(P) or Delivery(D): ");
