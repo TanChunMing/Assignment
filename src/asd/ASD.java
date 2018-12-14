@@ -1987,11 +1987,11 @@ public class ASD {
         //compare the areacode
         Collections.sort(arrayDeliver, new marksCompare());
 
-        System.out.println("   PackageID      Customer Name         Area        Address");
-        System.out.println("   =========      =============         ====        =======");
+        System.out.println("   PackageID\tCustomer Name\t\tArea\tAddress");
+        System.out.println("   =========\t=============\t\t====\t=======");
         for (Deliver d : arrayDeliver) 
         {
-            System.out.print(number + ". " +d.packageID+"         "+d.name+"                 "+d.code+"           "+d.address+"\n");
+            System.out.print(number + ". " +d.packageID+"\t"+d.name+"\t\t\t"+d.code+"\t"+d.address+"\n");
             number++;
         }
         if (number == 1) {
@@ -2142,6 +2142,9 @@ public class ASD {
     }
     public static void pickup(String formattedString) throws IOException {
         Scanner sc = new Scanner(System.in);
+        Queue<String> pickupID = new CircularLinkedQueue();
+        Queue<String> time = new CircularLinkedQueue();
+        Queue<String> name = new CircularLinkedQueue();
         File deliver = new File("pickup.txt");
         System.out.println("Pickup list for " + formattedString);
         //count number of records in deliver.txt
@@ -2153,17 +2156,22 @@ public class ASD {
         }
         readPickup.close();
 
-        System.out.println("   PickUpID     Time       Customer Name");
-        System.out.println("   ========     =====      =============");
+        System.out.println("   PickUpID\tTime\t\tCustomer Name");
+        System.out.println("   ========\t=====\t\t=============");
 
         Scanner read = new Scanner(deliver);
         for (int i = 0; i < linesDeliver; i++) {
             String str = read.nextLine();
             String[] cols = str.split(",");
             if (cols[0].equals(formattedString)) {
-                System.out.println(number + ". " + cols[1] + "       " + cols[2]+"      "+cols[3]);
-                number++;
+                pickupID.enqueue(cols[1]);
+                time.enqueue(cols[2]);
+                name.enqueue(cols[3]);
             }
+        }
+        while(!pickupID.isEmpty()){
+            System.out.println(number + ". " + pickupID.dequeue() + "\t" + time.dequeue() + "\t\t" + name.dequeue());
+            number++;
         }
         if (number == 1) {
             System.out.println("------------------------------");
@@ -2201,6 +2209,7 @@ public class ASD {
                 String[] cols = str.split(",");
                 if (!cols[2].equals(pickupID)) {
                     pickupCount++;
+                    
                 }
             }
             read.close();
