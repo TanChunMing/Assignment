@@ -1911,7 +1911,7 @@ public class ASD {
                 System.out.println("There are no record for the customer, please try again.\n");
         }
         read.close();
-
+        //switch to addpickup/add delivery module
         while (invalidInput) {
             System.out.print("\nPickup(P) or Delivery(D): ");
             String selection = sc.next();
@@ -1986,7 +1986,7 @@ public class ASD {
         }
         //compare the areacode
         Collections.sort(arrayDeliver, new marksCompare());
-
+        //display the record that store in arraylist according to area code
         System.out.println("   PackageID\tCustomer Name\t\tArea\tAddress");
         System.out.println("   =========\t=============\t\t====\t=======");
         for (Deliver d : arrayDeliver) 
@@ -2158,7 +2158,7 @@ public class ASD {
 
         System.out.println("   PickUpID\tTime\t\tCustomer Name");
         System.out.println("   ========\t=====\t\t=============");
-
+        //compare check record for today's date and store in circularlinkedqueue
         Scanner read = new Scanner(deliver);
         for (int i = 0; i < linesDeliver; i++) {
             String str = read.nextLine();
@@ -2169,6 +2169,7 @@ public class ASD {
                 name.enqueue(cols[3]);
             }
         }
+        //dequeue record in circularlinkedqueue
         while(!pickupID.isEmpty()){
             System.out.println(number + ". " + pickupID.dequeue() + "\t" + time.dequeue() + "\t\t" + name.dequeue());
             number++;
@@ -2227,14 +2228,14 @@ public class ASD {
         } else {
             pickupID = "P00001";
         }
-
+        //get data
         while (blankInput) {
             System.out.print("\nPickupID: " + pickupID);
             System.out.print("\nDate(DD-MM-YYYY): ");
             String date = sc.nextLine();
             System.out.print("Customer name: ");
             String name = sc.nextLine();
-
+            //check error and store in pickup.txt
             if (name.equals("") || date.equals("")) {
                 System.out.println("Please do not leave any input field blank.");
             } else {
@@ -2267,7 +2268,7 @@ public class ASD {
         readPickup.close();
         System.out.println("   PickUpID     Time       Customer Name");
         System.out.println("   ========     =====      =============");
-
+        //check record with today's date
         Scanner reada = new Scanner(deliver);
         for (int i = 0; i < pickupline; i++) {
             String str = reada.nextLine();
@@ -2287,7 +2288,7 @@ public class ASD {
         reada.close();
         System.out.print("Please enter PickupID: ");
         String pickupID = sc.nextLine();
-        //find the customer name
+        //find the pickupID
         Scanner read = new Scanner(new File("pickup.txt"));
         for (int i = 0; i < pickupline; i++) {
             String str = read.nextLine();
@@ -2305,14 +2306,14 @@ public class ASD {
             }
         }
         read.close();
-
+        //check blank input
         if (p1.getPickupID() == null) {
             System.out.println("There are no record for the customer, please try again.\n");
             File tempFile = new File("temp.txt");
             tempFile.delete();
             timestamp(formattedString);
         }
-
+        //display the pickupID info
         System.out.println("\nPickupID Information");
         System.out.println("====================");
         System.out.print("Pickup ID: ");
@@ -2323,11 +2324,11 @@ public class ASD {
         System.out.print(p1.getTime());
         System.out.print("\nCustomer Name: ");
         System.out.print(p1.getCustomerName());
-
+        //get time
         System.out.print("\nPlease insert a time(24:00): ");
         p1.setTime(sc.nextLine());
         System.out.println("\nUpdate success!");
-
+        //overwrite the time of the pickupID in pickup.txt
         Writer output;
         output = new BufferedWriter(new FileWriter(new File("temp.txt"), true));
         output.append(p1.getPickupDate() + "," + p1.getPickupID() + "," + p1.getTime() + "," + p1.getCustomerName());
