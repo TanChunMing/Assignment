@@ -16,7 +16,7 @@ public class Product {
     private int quantity;
     private String type;
     private String payment;
-    
+    private int total;
     public Product(){
         
     }
@@ -65,5 +65,11 @@ public class Product {
     }
     public void setPayment(String payment){
         this.payment=payment;
+    }
+    public int getTotal(){
+        return total;
+    }
+    public void setTotal(int total){
+        this.total=total;
     }
 }
