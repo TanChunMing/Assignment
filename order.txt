@@ -1,1 +1,2 @@
-F00002;pink rose;123;Yes
+A00001;F00001;white rose;20;200
+A00002;F00001;white rose;10;100
