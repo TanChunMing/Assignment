@@ -1488,9 +1488,7 @@ public class ASD {
                 orderItem("flower");
             } else if (selection.equals("2")) {
                 invalidInput = false;
-                readCustID("cc");
-                
-               
+                corderItem("flower");
             } else if (selection.equals("3")) {
                 invalidInput = false;
                 viewCustomerLimit("cc");
@@ -1519,7 +1517,7 @@ public class ASD {
             System.out.println("|                                   |");
             System.out.println("-------------------------------------");
         } else {
-           
+            //count number of records in catalog.txt
             BufferedReader readCorporateCustomer = new BufferedReader(new FileReader("customer.txt"));
             int linesCorporateCustomer = 0;
             int number = 1;
@@ -1528,7 +1526,7 @@ public class ASD {
             }
             readCorporateCustomer.close();
 
-            
+            //find the items with the flower as its type
             Scanner read = new Scanner(corporatecustomer);
             for (int i = 0; i < linesCorporateCustomer; i++) {
                 String str = read.nextLine();
@@ -1602,7 +1600,7 @@ public class ASD {
                 orderItem("flower");
             } else if (selection.equals("2")) {
                 invalidInput = false;
-                corderItem("flower","a");
+                corderItem("flower");
             } else if (selection.equals("3")) {
                 invalidInput = false;
                 viewCustomerLimit("cc");
@@ -1615,210 +1613,59 @@ public class ASD {
 
         }
     }
-private static int tmpTotal1=0;
-    public static void corderItem(String type, String custID) throws IOException {
+
+    public static void corderItem(String type) throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
         File catalog = new File("catalog.txt");
-        File corder = new File("corder.txt");
-        
-        
         boolean exist = catalog.exists();
         Product p1 = new Product();
-        Customer c1 = new Customer();
-        String str1;
-        String orderID = "B00001";
-        int orderCount = 0;
+        Customer cust = new Customer();
         
+        String str1;
 
-        //count number of records in catalog.txt
-        BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
-        int linesCatalog = 0;
-        while (readCatalog.readLine() != null) {
-            linesCatalog++;
-        }
-        readCatalog.close();
-        //display catalog
-        System.out.println("   Product ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
+        //check if catalog file exist
+        if (!exist) {
+            System.out.println("--------------------------");
+            System.out.println("|                        |");
+            System.out.println("|    Catalog is empty    |");
+            System.out.println("|                        |");
+            System.out.println("--------------------------");
+        } else {
+            //count number of records in catalog.txt
+            BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+            int linesCatalog = 0;
+            int number = 1;
+
+            while (readCatalog.readLine() != null) {
+                linesCatalog++;
+            }
+            readCatalog.close();
+
+            System.out.println("   Product ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
             System.out.println("   ==========\t\t============\t\t=========\t=================");
 
             //find the items with the flower as its type
-            Scanner read = new Scanner(new File("catalog.txt"));
+            Scanner read = new Scanner(catalog);
             for (int i = 0; i < linesCatalog; i++) {
                 String str = read.nextLine();
                 String[] cols = str.split(";");
                 if (cols[4].equals(type)) {
-                    System.out.println(cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3]);
-
-                }
-
-            }
-            read.close();
-            //read productID
-        System.out.print("Please enter Product ID: ");
-        String productID = sc.nextLine();
-
-        //find the items with the flower as its type
-        Scanner read2 = new Scanner(new File("catalog.txt"));
-        for (int i = 0; i < linesCatalog; i++) {
-            String str = read2.nextLine();
-            String[] cols = str.split(";");
-            if (cols[0].equals(productID) && cols[4].equals(type)) {
-                p1.setProductID(productID);
-                p1.setProductName(cols[1]);
-                p1.setPrice(cols[2]);
-                p1.setQuantity(cols[3]);
-                p1.setType(cols[4]);
-            } else {
-
-            }
-        }
-        read2.close();
-
-        if (p1.getProductID() == null) {
-            System.out.println("The product ID you entered is not exist, please try again.\n");
-
-            module3();
-        }
-       
-        //get quantity
-        System.out.print("\nEnter quantities: ");
-        p1.setQuantity(sc.nextLine());
-        p1.setTotal(p1.getQuantity()*p1.getPrice());
-        tmpTotal1 += p1.getTotal();
-        
-        if (exist) {
-            //count number of records
-            BufferedReader readOrder = new BufferedReader(new FileReader("corder.txt"));
-            int totalOrder = 0;
-            while (readOrder.readLine() != null) {
-                totalOrder++;
-            }
-            readOrder.close();
-
-            //calculate the latest OrderID
-            Scanner read1 = new Scanner(corder);
-            for (int i = 0; i < totalOrder; i++) {
-                String str = read1.nextLine();
-                String[] cols = str.split(";");
-                if (!cols[0].equals(orderID)) {
-                    orderCount++;
-                }
-            }
-            read1.close();
-
-            //create C-OrderID
-            if (orderCount < 9) {
-                orderID = "B0000" + (orderCount + 1);
-            } else if (orderCount < 99) {
-                orderID = "B000" + (orderCount + 1);
-            } else if (orderCount < 999) {
-                orderID = "B00" + (orderCount + 1);
-            } else if (orderCount < 9999) {
-                orderID = "B0" + (orderCount + 1);
-            }else {
-            orderID = "B00001";
-        }
-        } 
-        
-        
-        Writer output;
-        output = new BufferedWriter(new FileWriter(new File("corder.txt"), true));
-        
-         if (!exist) {
-                    output.append(orderID+";"+p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity()+ ";" + p1.getTotal()+";"+custID);
-                } else {
-                    output.append(System.lineSeparator()+orderID +";" + p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity()+";" + p1.getTotal()+";"+custID);
-                }
-                output.close();
-
-        while (invalidInput) {
-
-            System.out.print("Do you still want to add item ? Y or N only ");
-            str1 = sc.next();
-            if (str1.equals("Y")) {
-                invalidInput = false;
-                caddnew(orderID,custID,"flower");
-            } else if (str1.equals("N")) {
-                invalidInput = false;
-                System.out.println("Thank for the orders");
-                tambah(tmpTotal,orderID,"C",custID);
-            } else {
-                System.out.println("Invalid input. Please enter Y or N only");
-            }
-
-        }
-        
-}
-    public static void readCustID(String type) throws IOException {
-       Scanner sc = new Scanner(System.in);
-        boolean invalidInput = true;
-
-        File corporatecustomer = new File("customer.txt");
-        
-
-        Product p1 = new Product();
-        Customer c1 = new Customer();
-
-        BufferedReader readCustomer= new BufferedReader(new FileReader("customer.txt"));
-        int linesCustomer= 0;
-        int number = 1;
-        while (readCustomer.readLine() != null) {
-            linesCustomer++;
-        }
-        readCustomer.close();
-           
-         Scanner read4 = new Scanner(corporatecustomer);
-            for (int i = 0; i < linesCustomer; i++) {
-                String str = read4.nextLine();
-                String[] cols = str.split(",");
-                if (cols[2].equals(type)) {
-
+                    System.out.println(number + ". " + cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3]);
                     number++;
+
                 }
-            }
-            read4.close();
-        
-
-        
-        System.out.print("Please enter Customer ID: ");
-        String custID = sc.nextLine();
-       
-        
-        Scanner readC = new Scanner(new File("customer.txt"));
-        for (int i = 0; i < linesCustomer; i++) {
-            String str = readC.nextLine();
-            String[] cols = str.split(",");
-            if (cols[0].equals(custID) && cols[2].equals(type)) {
-                c1.setCustID(custID);
-                c1.setCustName(cols[1]);
-                c1.setCustType(cols[2]);
-                c1.setCreditLimit(cols[3]);
-                c1.setCurrentCredit(cols[4]);
-                c1.setCompanyName(cols[5]);
-            } else {
 
             }
-             
+            read.close();
         }
-       readC.close();
 
-        if (c1.getCustID() == null) {
-            System.out.println("The Customer ID you entered is not exist, please try again.\n");
-		module3();
-        }
-        corderItem("flower",custID);
-    }
-    
-   public static void caddnew(String orderID,String custID,String type) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        boolean invalidInput = true;
-        File catalog = new File("catalog.txt");
-        File order = new File("corder.txt");
-        boolean exist = catalog.exists();
-        Product p1 = new Product();
-        Customer c1 = new Customer();
-        String str1;
+        System.out.print("Enter Customer ID:");
+        cust.setCustID(sc.nextLine());
+        String custIDtmp = cust.getCustID();
+
+        System.out.print("Please enter Product ID: ");
+        String productID = sc.nextLine();
 
         //count number of records in catalog.txt
         BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
@@ -1827,30 +1674,11 @@ private static int tmpTotal1=0;
             linesCatalog++;
         }
         readCatalog.close();
-        //display catalog
-        System.out.println("   Product ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
-            System.out.println("   ==========\t\t============\t\t=========\t=================");
-
-            //find the items with the flower as its type
-            Scanner read = new Scanner(new File("catalog.txt"));
-            for (int i = 0; i < linesCatalog; i++) {
-                String str = read.nextLine();
-                String[] cols = str.split(";");
-                if (cols[4].equals(type)) {
-                    System.out.println(cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3]);
-
-                }
-
-            }
-            read.close();
-            //read productID
-        System.out.print("Please enter Product ID: ");
-        String productID = sc.nextLine();
 
         //find the items with the flower as its type
-        Scanner read2 = new Scanner(new File("catalog.txt"));
+        Scanner read = new Scanner(new File("catalog.txt"));
         for (int i = 0; i < linesCatalog; i++) {
-            String str = read2.nextLine();
+            String str = read.nextLine();
             String[] cols = str.split(";");
             if (cols[0].equals(productID) && cols[4].equals(type)) {
                 p1.setProductID(productID);
@@ -1863,49 +1691,49 @@ private static int tmpTotal1=0;
             }
         }
         read.close();
-              
+        
         if (p1.getProductID() == null) {
             System.out.println("The product ID you entered is not exist, please try again.\n");
-
+            File tempFile = new File("tempc.txt");
+            tempFile.delete();
             module3();
         }
-           
-        //get quantity
+        
         System.out.print("\nEnter quantities: ");
         p1.setQuantity(sc.nextLine());
-        p1.setTotal(p1.getQuantity()*p1.getPrice());
-        tmpTotal1 += p1.getTotal();
-        
-        
-        Writer output;
-        output = new BufferedWriter(new FileWriter(new File("corder.txt"), true));
-        
-         if (!exist) {
-                    output.append(orderID+";"+p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity()+ ";" + p1.getTotal()+";"+custID);
-                } else {
-                    output.append(System.lineSeparator()+orderID +";" + p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity()+";" + p1.getTotal()+";"+custID);
-                }
-                output.close();
+
+        System.out.print("\nEnter again coperate customer ID :");
+        cust.setCustID(sc.nextLine());
 
         while (invalidInput) {
 
-            System.out.print("Do you still want to add item ? Y or N only ");
+            System.out.print("Do you still want to add orders ? Y or N only ");
             str1 = sc.next();
             if (str1.equals("Y")) {
                 invalidInput = false;
-                caddnew(orderID,custID,"flower");
+                corderItem("flower");
             } else if (str1.equals("N")) {
                 invalidInput = false;
                 System.out.println("Thank for the orders");
-                tambah(tmpTotal1,orderID,"C",custID);
+
             } else {
                 System.out.println("Invalid input. Please enter Y or N only");
             }
 
         }
+
+        Writer output;
+        output = new BufferedWriter(new FileWriter(new File("tempc.txt"), true));
+        output.append(cust.getCustID() + ";" + p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity());
+        output.close();
+
+        File originalFile = new File("corder.txt");
+        originalFile.delete();
+
+        File tempFile = new File("tempc.txt");
+        tempFile.renameTo(originalFile);
+
     }
-    
-    
         private static int tmpTotal=0;
     public static void orderItem(String type) throws IOException {
         Scanner sc = new Scanner(System.in);
@@ -2148,9 +1976,9 @@ private static int tmpTotal1=0;
     public static void module4() throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
-        LocalDate localDate = LocalDate.now();
+        /*LocalDate localDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
-        String formattedString = localDate.format(formatter);
+        String formattedString = localDate.format(formatter);*/
 
         System.out.println("Order Pickup/Delivery and Consumer Payment Management");
         System.out.println("============");
@@ -2173,11 +2001,9 @@ private static int tmpTotal1=0;
             } else if (selection.equals("3")) {
                 invalidInput = false;
                 delivermenu();
-                
             } else if (selection.equals("0")) {
                 invalidInput = false;
-                mainMenu();
-                
+                mainMenu(); 
             }else {
                 System.out.println("Invalid Input. Please enter only 1, 2, 3 and 0");
             }
@@ -2186,47 +2012,135 @@ private static int tmpTotal1=0;
     public static void payment() throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
+        File order = new File("orderprice.txt");
+        File customer = new File("customer.txt");
+        int price = 0;
+        String name = "";
+        int number = 1;
+        Customer c1 = new Customer();
+
         //count number of records in order.txt
-        BufferedReader readOrder = new BufferedReader(new FileReader("order.txt"));
+        BufferedReader readOrder = new BufferedReader(new FileReader("orderprice.txt"));
+        BufferedReader readCustomer = new BufferedReader(new FileReader("customer.txt"));
+        //read order total record
         int linesOrder = 0;
         while (readOrder.readLine() != null) {
             linesOrder++;
         }
         readOrder.close();
-        
+        //read total customer record
+        int linesCust = 0;
+        while (readCustomer.readLine() != null) {
+            linesCust++;
+        }
+        readCustomer.close();
+        //read customer ID
         System.out.println("Consumer Payment");
         System.out.println("================");
-        System.out.println("Please enter your name: ");
-        String name = sc.nextLine();
-        Scanner read = new Scanner(new File("order.txt"));
+        System.out.print("Please enter customer ID: ");
+        String custID = sc.nextLine();
+        
+        System.out.println("   0rder ID\tTotal Price");
+        System.out.println("   ========\t===========");
+        //display the order that the customer ID have
+        Scanner reada = new Scanner(order);
         for (int i = 0; i < linesOrder; i++) {
-            String str = read.nextLine();
+            String str = reada.nextLine();
             String[] cols = str.split(";");
-            if (cols[0].equals("a")) {
-                System.out.println("aaaa\n");
+            if (cols[3].equals(custID)) {
+                System.out.println(number + ". " + cols[0] + "\t" + cols[1]);
+                number++;
+            }
         }
-            else{
-                System.out.println("There are no record for the customer, please try again.\n");
+        //get orderID
+        System.out.print("\nPlease enter order ID: ");
+        String orderID = sc.nextLine();
+        //make payment for the OrderID that input
+        Scanner read = new Scanner(customer);
+        for (int i = 0; i < linesCust; i++) {
+            String str = read.nextLine();
+            String[] cols = str.split(",");
+            if (cols[0].equals(custID)) {
+                c1.setCustID(cols[0]);
+                c1.setCustName(cols[1]);
+                name = c1.getCustName();
+                c1.setCustType(cols[2]);
+                c1.setCreditLimit(cols[3]);
+                c1.setCurrentCredit(cols[4]);
+                c1.setCompanyName(cols[5]);
+                
+                Scanner read2 = new Scanner(order);
+                for (int j = 0; j < linesOrder; j++) {
+                    String str1 = read2.nextLine();
+                    String[] cols1 = str1.split(";");
+                    if (cols1[0].equals(orderID)) {
+                        System.out.println("Customer ID: "+cols1[3]);
+                        System.out.println("Order ID: "+cols1[0]);
+                        System.out.println("Total Price: "+cols1[1]);
+                        price = Integer.parseInt(cols1[1]);
+                        System.out.println("Current Credit Limit: "+cols[4]);
+                        
+                    }
+                }
+                read2.close();
+            }else{
+                Writer output;
+                output = new BufferedWriter(new FileWriter(new File("temp.txt"), true));
+                output.append(str + System.lineSeparator());
+                output.close();
+            }
         }
+        if(custID.equals("")){
+            System.out.println("\nPlease do not leave the input field blank.\n");
+            File tempFile = new File("temp.txt");
+            tempFile.delete();
+            payment();
+        }
+        else if(c1.getCustID()==null){
+            System.out.println("\nNo record for the customer. Please try again.\n");
+            File tempFile = new File("temp.txt");
+            tempFile.delete();
+            payment();
+        }
+        else if(c1.getCurrentCredit()<price){
+            System.out.println("\nInsufficient credit. Please try again.\n");
+            File tempFile = new File("temp.txt");
+            tempFile.delete();
+            payment();
+        } 
         read.close();
+        //calculate balance
+        int balance = c1.getCurrentCredit()-price;
+        System.out.println("Credit Limit Balance: "+ balance);
         
+        //update customer credit limit
+        Writer output;
+        output = new BufferedWriter(new FileWriter(new File("temp.txt"), true));
+        output.append(c1.getCustID() + "," + c1.getCustName() + "," + c1.getCustType() + "," + c1.getCreditLimit()+ "," + balance+ "," + c1.getCompanyName());
+        output.close();
+
+        File originalFile = new File("customer.txt");
+        originalFile.delete();
+
+        File tempFile = new File("temp.txt");
+        tempFile.renameTo(originalFile);
         
-        //switch to addpickup/add delivery module
-        while (invalidInput) {
-            System.out.print("\nPickup(P) or Delivery(D): ");
+        //add order to delivery or pickup
+        while(invalidInput){
+            System.out.print("\nPlease choose a method to receive your order Pickup(P) or Delivery(D): ");
             String selection = sc.next();
             sc.nextLine();
             if (selection.equals("P")||selection.equals("p")) {
                 invalidInput = false;
-                addpickup();
+                addpickup(orderID,name);
             } else if (selection.equals("D")||selection.equals("d")) {
                 invalidInput = false;
-                adddeliver();
+                adddeliver(orderID,name);
             } else {
-                System.out.println("Invalid Input. Please enter only P for pickup or D for delivery");
+                System.out.println("Invalid Input. Please enter only P for pickup or D for delivery.");
             }
         }
-    }
+        
     }
     public static void delivermenu() throws IOException {
         Scanner sc = new Scanner(System.in);
@@ -2251,7 +2165,7 @@ private static int tmpTotal1=0;
             } else if (selection.equals("0")) {
                 invalidInput = false;
                 module4();
-            } else {
+            }else {
                 System.out.println("Invalid Input. Please enter only 1 and 0");
             }
         }
@@ -2286,8 +2200,9 @@ private static int tmpTotal1=0;
         }
         //compare the areacode
         Collections.sort(arrayDeliver, new marksCompare());
+        
         //display the record that store in arraylist according to area code
-        System.out.println("   PackageID\tCustomer Name\t\tArea\tAddress");
+        System.out.println("   Ordere ID\tCustomer Name\t\tArea\tAddress");
         System.out.println("   =========\t=============\t\t====\t=======");
         for (Deliver d : arrayDeliver) 
         {
@@ -2309,52 +2224,16 @@ private static int tmpTotal1=0;
         
         delivermenu();
     }
-    public static void adddeliver() throws IOException {
+    public static void adddeliver(String orderID,String name) throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean blankInput = true;
         File deliver = new File("deliver.txt");
         boolean exist = deliver.exists();
-        String packageID = "D00001";
-        int deliverCount = 1;
         String area = "0";
-;        if (exist) {
-            //count number of records
-            BufferedReader readDeliver = new BufferedReader(new FileReader("deliver.txt"));
-            int totalRecord = 0;
-            while (readDeliver.readLine() != null) {
-                totalRecord++;
-            }
-            readDeliver.close();
-
-            //calculate the latest pickupID
-            Scanner read = new Scanner(deliver);
-            for (int i = 0; i < totalRecord; i++) {
-                String str = read.nextLine();
-                String[] cols = str.split(",");
-                if (!cols[1].equals(packageID)) {
-                    deliverCount++;
-                }
-            }
-            read.close();
-
-            //create packageID
-            if (deliverCount < 9) {
-                packageID = "D0000" + (deliverCount + 1);
-            } else if (deliverCount < 99) {
-                packageID = "D000" + (deliverCount + 1);
-            } else if (deliverCount < 999) {
-                packageID = "D00" + (deliverCount + 1);
-            } else if (deliverCount < 9999) {
-                packageID = "D0" + (deliverCount + 1);
-            }
-        } else {
-            packageID = "D00001";
-        }
 
         while (blankInput) {
-            System.out.print("\nPackageID: " + packageID);
-            System.out.print("\nCustomer Name: ");
-            String name = sc.nextLine();
+           while (blankInput) {  System.out.print("\nOrder ID: " + orderID);
+            System.out.print("\nCustomer Name: "+ name);
             System.out.print("Date(DD-MM-YYYY): ");
             String date = sc.nextLine();
             System.out.print("Postcode: ");
@@ -2362,14 +2241,14 @@ private static int tmpTotal1=0;
             System.out.print("Address: ");
             String address = sc.nextLine();
             
-            if (date.equals("") || name.equals("") || address.equals("")) {
+            if (date.equals("") ||address.equals("")||postcode.equals("")) {
                 System.out.println("Please do not leave any input field blank.");
             } 
             else if(!isInteger(postcode)){
-                System.out.println("Postcode entered is not integer.");
+                System.out.println("Postcode entered is invalid.");
             }
             else if(Integer.parseInt(postcode) < 50000 || Integer.parseInt(postcode) > 60000){
-                System.out.println("Out of delivery");
+                System.out.println("Area out of delivery.");
             }
             else {
                 if (Integer.parseInt(postcode) >= 50000 && Integer.parseInt(postcode) < 51000){
@@ -2397,9 +2276,9 @@ private static int tmpTotal1=0;
                 Writer output;
                 output = new BufferedWriter(new FileWriter("deliver.txt", true));
                 if (!exist) {
-                    output.append(date + "," + packageID + "," + name + "," + area + "," + address);
+                    output.append(date + "," + orderID + "," + name + "," + area + "," + address);
                 } else {
-                    output.append(System.lineSeparator() + date + "," + packageID + "," + name + "," + area + "," + address);
+                    output.append(System.lineSeparator() + date + "," + orderID + "," + name + "," + area + "," + address);
                 }
                 output.close();
 
@@ -2407,6 +2286,7 @@ private static int tmpTotal1=0;
                 module4();
             }
         }
+    }
     }
     public static void pickupmenu() throws IOException {
         Scanner sc = new Scanner(System.in);
@@ -2435,7 +2315,10 @@ private static int tmpTotal1=0;
             } else if (selection.equals("0")) {
                 invalidInput = false;
                 module4();
-            } else {
+            } 
+             else if (selection.equals("0")) {
+                System.out.println("Please do not leave the input field blank.");
+            }else {
                 System.out.println("Invalid Input. Please enter only 1, 2 and 0");
             }
         }
@@ -2456,7 +2339,7 @@ private static int tmpTotal1=0;
         }
         readPickup.close();
 
-        System.out.println("   PickUpID\tTime\t\tCustomer Name");
+        System.out.println("   Order ID\tTime\t\tCustomer Name");
         System.out.println("   ========\t=====\t\t=============");
         //compare check record for today's date and store in circularlinkedqueue
         Scanner read = new Scanner(deliver);
@@ -2485,67 +2368,30 @@ private static int tmpTotal1=0;
         System.out.println("\n");
         pickupmenu();
     }
-    public static void addpickup() throws IOException {
+    public static void addpickup(String orderID,String name) throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean blankInput = true;
         File pickup = new File("pickup.txt");
         boolean exist = pickup.exists();
-        String pickupID = "P00001";
-        int pickupCount = 0;
         String time = "null";
-
-        if (exist) {
-            //count number of records
-            BufferedReader readPickup = new BufferedReader(new FileReader("pickup.txt"));
-            int totalPickup = 0;
-            while (readPickup.readLine() != null) {
-                totalPickup++;
-            }
-            readPickup.close();
-
-            //calculate the latest pickupID
-            Scanner read = new Scanner(pickup);
-            for (int i = 0; i < totalPickup; i++) {
-                String str = read.nextLine();
-                String[] cols = str.split(",");
-                if (!cols[2].equals(pickupID)) {
-                    pickupCount++;
-                    
-                }
-            }
-            read.close();
-
-            //create pickupID
-            if (pickupCount < 9) {
-                pickupID = "P0000" + (pickupCount + 1);
-            } else if (pickupCount < 99) {
-                pickupID = "P000" + (pickupCount + 1);
-            } else if (pickupCount < 999) {
-                pickupID = "P00" + (pickupCount + 1);
-            } else if (pickupCount < 9999) {
-                pickupID = "P0" + (pickupCount + 1);
-            }
-        } else {
-            pickupID = "P00001";
-        }
-        //get data
+        
         while (blankInput) {
-            System.out.print("\nPickupID: " + pickupID);
+            System.out.print("\nOrder ID: " + orderID);
+            System.out.print("\nCustomer name: "+ name);
             System.out.print("\nDate(DD-MM-YYYY): ");
             String date = sc.nextLine();
-            System.out.print("Customer name: ");
-            String name = sc.nextLine();
+            
             //check error and store in pickup.txt
-            if (name.equals("") || date.equals("")) {
-                System.out.println("Please do not leave any input field blank.");
+            if (date.equals("")) {
+                System.out.println("Please do not leave the input field blank.");
             } else {
                 blankInput = false;
                 Writer output;
                 output = new BufferedWriter(new FileWriter("pickup.txt", true));
                 if (!exist) {
-                    output.append(date + "," + pickupID + "," + time + "," + name);
+                    output.append(date + "," + orderID + "," + time + "," + name);
                 } else {
-                    output.append(System.lineSeparator() + date + "," + pickupID + ","  + time + "," + name);
+                    output.append(System.lineSeparator() + date + "," + orderID + ","  + time + "," + name);
                 }
                 output.close();
 
@@ -2566,15 +2412,15 @@ private static int tmpTotal1=0;
             pickupline++;
         }
         readPickup.close();
-        System.out.println("   PickUpID     Time       Customer Name");
-        System.out.println("   ========     =====      =============");
+        System.out.println("   0rder ID\tTime\tCustomer Name");
+        System.out.println("   ========\t=====\t=============");
         //check record with today's date
         Scanner reada = new Scanner(deliver);
         for (int i = 0; i < pickupline; i++) {
             String str = reada.nextLine();
             String[] cols = str.split(",");
             if (cols[0].equals(formattedString)) {
-                System.out.println(number + ". " + cols[1] + "       " + cols[2]+"      "+cols[3]);
+                System.out.println(number + ". " + cols[1] + "\t" + cols[2]+"\t"+cols[3]);
                 number++;
             }
         }
@@ -2586,7 +2432,7 @@ private static int tmpTotal1=0;
             System.out.println("------------------------------");
         }
         reada.close();
-        System.out.print("Please enter PickupID: ");
+        System.out.print("Please enter Order ID: ");
         String pickupID = sc.nextLine();
         //find the pickupID
         Scanner read = new Scanner(new File("pickup.txt"));
@@ -2594,7 +2440,7 @@ private static int tmpTotal1=0;
             String str = read.nextLine();
             String[] cols = str.split(",");
             if (cols[1].equals(pickupID)) {
-                p1.setPickupID(pickupID);
+                p1.setPickupID(cols[1]);
                 p1.setPickupDate(cols[0]);
                 p1.setTime(cols[2]);
                 p1.setCustomerName(cols[3]);
@@ -2608,15 +2454,15 @@ private static int tmpTotal1=0;
         read.close();
         //check blank input
         if (p1.getPickupID() == null) {
-            System.out.println("There are no record for the customer, please try again.\n");
+            System.out.println("There are no record for the orderID, please try again.\n");
             File tempFile = new File("temp.txt");
             tempFile.delete();
             timestamp(formattedString);
         }
         //display the pickupID info
-        System.out.println("\nPickupID Information");
+        System.out.println("\nOrderID Information");
         System.out.println("====================");
-        System.out.print("Pickup ID: ");
+        System.out.print("Order ID: ");
         System.out.print(p1.getPickupID());
         System.out.print("\nPickup Date: ");
         System.out.print(p1.getPickupDate());
@@ -2627,7 +2473,7 @@ private static int tmpTotal1=0;
         //get time
         System.out.print("\nPlease insert a time(24:00): ");
         p1.setTime(sc.nextLine());
-        System.out.println("\nUpdate success!");
+        System.out.println("\nUpdate successful!");
         //overwrite the time of the pickupID in pickup.txt
         Writer output;
         output = new BufferedWriter(new FileWriter(new File("temp.txt"), true));
