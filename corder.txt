@@ -1,0 +1,2 @@
+C001;B00001;white rose;10;100
+C002;B00002;white rose;20;200
