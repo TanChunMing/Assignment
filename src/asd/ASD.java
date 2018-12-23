@@ -2572,7 +2572,12 @@ public class ASD {
         System.out.println("================");
         System.out.print("Please enter customer ID: ");
         String custID = sc.nextLine();
-        
+        if(custID.equals("")){
+            System.out.println("\nPlease do not leave the input field blank.\n");
+            File tempFile = new File("temp.txt");
+            tempFile.delete();
+            payment();
+        }
         System.out.println("   0rder ID\tTotal Price");
         System.out.println("   ========\t===========");
         //display the order that the customer ID have
@@ -2582,9 +2587,17 @@ public class ASD {
             String[] cols = str.split(";");
             if (cols[3].equals(custID)) {
                 System.out.println(number + ". " + cols[0] + "\t" + cols[1]);
+                c1.setCustID(cols[3]);
                 number++;
             }
         }
+        if(c1.getCustID()==null){
+            System.out.println("\nNo record for the customer. Please try again.\n");
+            File tempFile = new File("temp.txt");
+            tempFile.delete();
+            payment();
+        }
+        reada.close();
         //get orderID
         System.out.print("\nPlease enter order ID: ");
         String orderID = sc.nextLine();
@@ -2623,23 +2636,10 @@ public class ASD {
                 output.close();
             }
         }
-        if(custID.equals("")){
-            System.out.println("\nPlease do not leave the input field blank.\n");
-            File tempFile = new File("temp.txt");
-            tempFile.delete();
-            payment();
-        }
-        else if(c1.getCustID()==null){
-            System.out.println("\nNo record for the customer. Please try again.\n");
-            File tempFile = new File("temp.txt");
-            tempFile.delete();
-            payment();
-        }
-        else if(c1.getCurrentCredit()<price){
+        if(c1.getCurrentCredit()<price){
             System.out.println("\nInsufficient credit. Please try again.\n");
             File tempFile = new File("temp.txt");
             tempFile.delete();
-            payment();
         } 
         read.close();
         //calculate balance
@@ -2657,6 +2657,26 @@ public class ASD {
 
         File tempFile = new File("temp.txt");
         tempFile.renameTo(originalFile);
+        
+        //delete the order ID 
+        Scanner read3 = new Scanner(order);
+        for (int i = 0; i < linesOrder; i++) {
+            String str = read3.nextLine();
+            String[] cols = str.split(";");
+            if (!cols[0].equals(orderID)) {
+                Writer output2;
+                output2 = new BufferedWriter(new FileWriter(new File("temp2.txt"), true));
+                output2.append(str + System.lineSeparator());
+                output2.close();
+            }
+        }
+        read3.close();
+        File deleteFile = new File("orderprice.txt");
+        deleteFile.delete();
+
+        File newFile = new File("temp2.txt");
+        newFile.renameTo(deleteFile);
+
         
         //add order to delivery or pickup
         while(invalidInput){
@@ -2739,7 +2759,7 @@ public class ASD {
         System.out.println("   =========\t=============\t\t====\t=======");
         for (Deliver d : arrayDeliver) 
         {
-            System.out.print(number + ". " +d.packageID+"\t"+d.name+"\t\t\t"+d.code+"\t"+d.address+"\n");
+            System.out.print(number + ". " +d.packageID+"\t"+d.name+"\t\t"+d.code+"\t"+d.address+"\n");
             number++;
         }
         if (number == 1) {
@@ -2767,7 +2787,7 @@ public class ASD {
         while (blankInput) {
            while (blankInput) {  System.out.print("\nOrder ID: " + orderID);
             System.out.print("\nCustomer Name: "+ name);
-            System.out.print("Date(DD-MM-YYYY): ");
+            System.out.print("\nDate(DD-MM-YYYY): ");
             String date = sc.nextLine();
             System.out.print("Postcode: ");
             String postcode = sc.nextLine();
@@ -2781,7 +2801,7 @@ public class ASD {
                 System.out.println("Postcode entered is invalid.");
             }
             else if(Integer.parseInt(postcode) < 50000 || Integer.parseInt(postcode) > 60000){
-                System.out.println("Area out of delivery.");
+                System.out.println("Area out of delivery. Please enter a postcode between 50000 - 60000");
             }
             else {
                 if (Integer.parseInt(postcode) >= 50000 && Integer.parseInt(postcode) < 51000){
