@@ -1489,7 +1489,7 @@ public class ASD {
         COrder corder = new COrder();
         boolean invalidInput = true;
         int total=0;
-        int subtotal = 0;
+        
 
         File corporatecusttomer = new File("customer.txt");
         boolean exist = corporatecusttomer.exists();
@@ -1561,7 +1561,7 @@ public class ASD {
             BufferedWriter br = new BufferedWriter(customerinvoice);
                         
             System.out.println("\nCustomer ID : " + custID);
-            System.out.println("ProductID       ProductName                     QTY                   Price                     SubTotal");
+            System.out.println("ProductID       ProductName                     QTY                   Price");
         }
            
         read1.close();  
@@ -1573,7 +1573,7 @@ public class ASD {
                 output.append("================INVOICE================"+System.lineSeparator());
                 output.append("Customer ID : "+ custID +System.lineSeparator());
                 output.append("======================================"+System.lineSeparator());
-                output.append("ProductID  ProductName     QTY   Price    Subtotal"+System.lineSeparator());
+                output.append("ProductID  ProductName     QTY   Price"+System.lineSeparator());
             
         for (int i = 0; i < linesCOrder; i++) {
             String str = read.nextLine();
@@ -1584,8 +1584,8 @@ public class ASD {
                 corder.setProductType(cols[2]);
                 corder.setInt1(cols[3]);
                 corder.setInt2(cols[4]);
-                subtotal = corder.getInt1() * corder.getInt2();
-                total += subtotal;
+                
+                total += corder.getInt2();
                 
                 System.out.print(corder.getProductID());
                 System.out.print("\t\t");
@@ -1595,10 +1595,10 @@ public class ASD {
                 System.out.print("\t\t\t");
                 System.out.print(corder.getInt2());
                 System.out.print("\t\t\t");
-                System.out.print(subtotal);
+                
                 System.out.print("\n");
                 
-                output.append(corder.getProductID() +"\t   "+ corder.getProductType() +"\t   "+ corder.getInt1() +"\t "+ corder.getInt2() + "\t  " + subtotal + System.lineSeparator());
+                output.append(corder.getProductID() +"\t   "+ corder.getProductType() +"\t   "+ corder.getInt1() +"\t "+ corder.getInt2() + "\t  " + System.lineSeparator());
                 
             }
            

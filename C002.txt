@@ -1,0 +1,7 @@
+===========Fiore Flowershop============
+================INVOICE================
+Customer ID : C002
+======================================
+ProductID  ProductName     QTY   Price
+B00002	   white rose	   20	 200	  
+				  Total : 200
