@@ -1153,7 +1153,7 @@ public class ASD {
     public static void module2() throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
-
+        System.out.println("\n============");
         System.out.println("Option");
         System.out.println("============");
         System.out.println("1. Manage Corporate Customer");
@@ -1176,9 +1176,11 @@ public class ASD {
 
             } else if (selection.equals("3")) {
                 invalidInput = false;
+                generateinvoice("cc");
 
             } else if (selection.equals("4")) {
                 invalidInput = false;
+                payinvoice();
 
             } else if (selection.equals("0")) {
                 invalidInput = false;
@@ -1196,7 +1198,7 @@ public class ASD {
         File corporatecustomer = new File("customer.txt");
         boolean exist = corporatecustomer.exists();
 
-        //check if catalog file exist
+        //check if customer file exist
         if (!exist) {
             System.out.println("-------------------------------------");
             System.out.println("|                                   |");
@@ -1204,7 +1206,7 @@ public class ASD {
             System.out.println("|                                   |");
             System.out.println("-------------------------------------");
         } else {
-            //count number of records in catalog.txt
+            //count number of records in customer.txt
             BufferedReader readCorporateCustomer = new BufferedReader(new FileReader("customer.txt"));
             int linesCorporateCustomer = 0;
             int number = 1;
@@ -1216,7 +1218,6 @@ public class ASD {
             System.out.println("   Customer ID\t\tName\t\t\tCredit Limit\t\tCurrent Credit\t\tCompanyName");
             System.out.println("   ============\t\t=========\t\t=============\t\t=============\t\t===============");
 
-            //find the items with the flower as its type
             Scanner read = new Scanner(corporatecustomer);
             for (int i = 0; i < linesCorporateCustomer; i++) {
                 String str = read.nextLine();
@@ -1301,7 +1302,7 @@ public class ASD {
         System.out.print("Please enter Customer ID: ");
         String custID = sc.nextLine();
 
-        //count number of records in catalog.txt
+        //count number of records in customer.txt
         BufferedReader readCatalog = new BufferedReader(new FileReader("customer.txt"));
         int linesCatalog = 0;
         while (readCatalog.readLine() != null) {
@@ -1309,7 +1310,7 @@ public class ASD {
         }
         readCatalog.close();
 
-        //find the items with the flower as its type
+        //find the customer with the customer id
         Scanner read = new Scanner(new File("customer.txt"));
         for (int i = 0; i < linesCatalog; i++) {
             String str = read.nextLine();
@@ -1331,7 +1332,7 @@ public class ASD {
         read.close();
 
         if (cust.getCustID() == null) {
-            System.out.println("The product ID you entered is not exist, please try again.\n");
+            System.out.println("The customer ID you entered is not exist, please try again.\n");
             File tempFile = new File("tempcust.txt");
             tempFile.delete();
             corporatecustomer(type);
@@ -1408,19 +1409,26 @@ public class ASD {
         File tempFile = new File("tempcust.txt");
         tempFile.renameTo(originalFile);
 
-        updateArray();
+        
 
         corporatecustomer(type);
     }
 
     public static void viewcorporatecustomerdetail(String type) throws IOException {
+        
+        Queue<String> custID = new CircularLinkedQueue();
+        Queue<String> custName = new CircularLinkedQueue();
+        
+        Queue<String> creditLimit = new CircularLinkedQueue();
+        Queue<String> currentCredit = new CircularLinkedQueue();
+        Queue<String> companyName = new CircularLinkedQueue();
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
 
         File corporatecustomer = new File("customer.txt");
         boolean exist = corporatecustomer.exists();
 
-        //check if catalog file exist
+        //check if customer file exist
         if (!exist) {
             System.out.println("-------------------------------------");
             System.out.println("|                                   |");
@@ -1428,7 +1436,7 @@ public class ASD {
             System.out.println("|                                   |");
             System.out.println("-------------------------------------");
         } else {
-            //count number of records in catalog.txt
+            //count number of records in customer.txt
             BufferedReader readCorporateCustomer = new BufferedReader(new FileReader("customer.txt"));
             int linesCorporateCustomer = 0;
             int number = 1;
@@ -1440,13 +1448,20 @@ public class ASD {
             System.out.println("   Customer ID\t\tName\t\t\tCredit Limit\t\tCurrent Credit\t\tCompany Name");
             System.out.println("   ============\t\t=========\t\t=============\t\t=============\t\t==================");
 
-            //find the items with the flower as its type
             Scanner read = new Scanner(corporatecustomer);
             for (int i = 0; i < linesCorporateCustomer; i++) {
                 String str = read.nextLine();
                 String[] cols = str.split(",");
                 if (cols[2].equals(type)) {
-                    System.out.println(number + ". " + cols[0] + "\t\t\t" + cols[1] + "\t\t" + cols[3] + "\t\t\t" + cols[4] + "\t\t\t" + cols[5]);
+                                custID.enqueue(cols[0]);
+                                custName.enqueue(cols[1]);
+                                
+                               creditLimit.enqueue(cols[3]);
+                                currentCredit.enqueue(cols[4]);
+                                companyName.enqueue(cols[5]);
+                                        
+                    System.out.println(number+ ". "+ custID.dequeue() + "\t\t\t" + custName.dequeue() + "\t\t"+ creditLimit.dequeue() + "\t\t\t" + currentCredit.dequeue() + "\t\t\t"+ companyName.dequeue());
+                    
                     number++;
                 }
             }
@@ -1468,6 +1483,241 @@ public class ASD {
             }
         }
     }
+    
+     public static void generateinvoice(String type) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        COrder corder = new COrder();
+        boolean invalidInput = true;
+        int total=0;
+        int subtotal = 0;
+
+        File corporatecusttomer = new File("customer.txt");
+        boolean exist = corporatecusttomer.exists();
+
+        //check if customer file exist
+        if (!exist) {
+            System.out.println("-------------------------------------");
+            System.out.println("|                                   |");
+            System.out.println("|   Corporate Customer is empty     |");
+            System.out.println("|                                   |");
+            System.out.println("-------------------------------------");
+        } else {
+            //count number of records in customer.txt
+            BufferedReader readcorporatecusttomer = new BufferedReader(new FileReader("customer.txt"));
+            int linescorporatecusttomer = 0;
+            int number = 1;
+            while (readcorporatecusttomer.readLine() != null) {
+                linescorporatecusttomer++;
+            }
+            readcorporatecusttomer.close();
+            System.out.println("\n   ============");
+            System.out.println("   Customer ID");
+            System.out.println("   ============");
+
+            Scanner read = new Scanner(corporatecusttomer);
+            for (int i = 0; i < linescorporatecusttomer; i++) {
+                String str = read.nextLine();
+                String[] cols = str.split(",");
+                
+                    System.out.println(number + ". " + cols[0]);
+                    number++;
+                
+            }
+            read.close();
+        }
+
+        while (invalidInput) {
+            System.out.print("\nPlease enter customer id to generate invoice: ");
+            String custID = sc.nextLine();
+            
+            //count number of records in customer.txt
+        BufferedReader readCOrder = new BufferedReader(new FileReader("corder.txt"));
+        int linesCOrder = 0;
+        while (readCOrder.readLine() != null) {
+            linesCOrder++;
+        
+            
+        }
+        readCOrder.close();
+
+        //find the customer with the customer id
+        
+        Scanner read1 = new Scanner(new File("corder.txt"));
+        boolean custidexist = false;
+        for (int i = 0; i < linesCOrder; i++) {
+            String str = read1.nextLine();
+            String[] cols = str.split(";");
+            if (cols[0].equals(custID)) {
+                custidexist = true;   
+            } 
+            
+        }
+        if(custidexist == true){
+            String fileName = custID+".txt";
+            File newFile = new File(fileName);
+            newFile.delete();
+            
+            FileWriter customerinvoice = new FileWriter(custID+".txt");
+            BufferedWriter br = new BufferedWriter(customerinvoice);
+                        
+            System.out.println("\nCustomer ID : " + custID);
+            System.out.println("ProductID       ProductName                     QTY                   Price                     SubTotal");
+        }
+           
+        read1.close();  
+        if(custidexist == true){
+        Scanner read = new Scanner(new File("corder.txt"));
+                Writer output;
+                output = new BufferedWriter(new FileWriter(new File(custID+".txt"), true));
+                output.append("===========Fiore Flowershop============"+System.lineSeparator());
+                output.append("================INVOICE================"+System.lineSeparator());
+                output.append("Customer ID : "+ custID +System.lineSeparator());
+                output.append("======================================"+System.lineSeparator());
+                output.append("ProductID  ProductName     QTY   Price    Subtotal"+System.lineSeparator());
+            
+        for (int i = 0; i < linesCOrder; i++) {
+            String str = read.nextLine();
+            String[] cols = str.split(";");
+            if (cols[0].equals(custID)) {
+                corder.setCustID(custID);
+                corder.setProductID(cols[1]);
+                corder.setProductType(cols[2]);
+                corder.setInt1(cols[3]);
+                corder.setInt2(cols[4]);
+                subtotal = corder.getInt1() * corder.getInt2();
+                total += subtotal;
+                
+                System.out.print(corder.getProductID());
+                System.out.print("\t\t");
+                System.out.print(corder.getProductType());
+                System.out.print("\t\t\t");
+                System.out.print(corder.getInt1());
+                System.out.print("\t\t\t");
+                System.out.print(corder.getInt2());
+                System.out.print("\t\t\t");
+                System.out.print(subtotal);
+                System.out.print("\n");
+                
+                output.append(corder.getProductID() +"\t   "+ corder.getProductType() +"\t   "+ corder.getInt1() +"\t "+ corder.getInt2() + "\t  " + subtotal + System.lineSeparator());
+                
+            }
+           
+        }
+        System.out.println("\t\t\t\t\t\t\t\t\t\t\tTotal : " + total);
+        output.append("\t\t\t\t  Total : " + total + System.lineSeparator());
+        output.close();
+        read.close();
+        System.out.println("\nInvoice Generated.");
+        }
+
+        if (corder.getCustID() == null) {
+            System.out.println("This customer does not have any order.\n");
+            File tempinvoice = new File("tempinvoice.txt");
+            tempinvoice.delete();
+            module2();
+        }
+            invalidInput= false;
+
+        }
+    
+        module2();
+    }
+     
+     public static void payinvoice() throws IOException {
+         Customer cust = new Customer();
+         Scanner sc = new Scanner(System.in);
+         boolean invalidInput = true;
+         
+        System.out.print("Please enter customer ID : ");
+        String custID = sc.nextLine();
+        
+        File payinvoice = new File(custID+".txt");
+        boolean exist = payinvoice.exists();
+         
+         if (!exist) {
+            System.out.println("Doesn't have this file.");
+            
+            
+        } else {
+            //count number of records in custID.txt
+            BufferedReader readInvoice = new BufferedReader(new FileReader(custID + ".txt"));
+            int lineInvoice = 0;
+            
+            while (readInvoice.readLine() != null) {
+                lineInvoice++;
+            }
+            readInvoice.close();
+            
+            Scanner read = new Scanner(payinvoice);
+            for (int i = 0; i < lineInvoice; i++) {
+                String str = read.nextLine();
+                System.out.println(str);   
+            }
+            read.close();
+            
+         System.out.println("\n1. Pay");
+         System.out.println("0. Back");
+        
+        
+         BufferedReader readCust = new BufferedReader(new FileReader("customer.txt"));
+        int lineCust = 0;
+        while (readCust.readLine() != null) {
+            lineCust++;
+        }
+        readCust.close();
+        
+        Scanner read1 = new Scanner(new File("customer.txt"));
+        for (int i = 0; i < lineCust; i++) {
+            String str = read1.nextLine();
+            String[] cols = str.split(",");
+            if (cols[0].equals(custID)) {
+                cust.setCustID(custID);
+                cust.setCustName(cols[1]);
+                cust.setCustType(cols[2]);
+                cust.setCreditLimit(cols[3]);
+                cust.setCurrentCredit(cols[4]);
+                cust.setCompanyName(cols[5]);
+            } else {
+                Writer output;
+                output = new BufferedWriter(new FileWriter(new File("temppayinvoice.txt"), true));
+                output.append(str + System.lineSeparator());
+                output.close();
+            }
+        }
+        read1.close();
+         
+         while (invalidInput) {
+            System.out.print("\nPlease select a choice: ");
+            String selection = sc.next();
+            sc.nextLine();
+
+            if (selection.equals("1")) {
+                invalidInput = false;
+                cust.setCurrentCredit("0");
+            } else if (selection.equals("0")) {
+                invalidInput = false;
+                module2();
+            } 
+             else {
+                System.out.println("Invalid Input. Please enter only 1 or 0");
+            }
+        }
+        System.out.println("Succesful pay the invoice.");
+        Writer output;
+        output = new BufferedWriter(new FileWriter(new File("temppayinvoice.txt"), true));
+        output.append(cust.getCustID() + "," + cust.getCustName() + "," + cust.getCustType() + "," + cust.getCreditLimit() + "," + cust.getCurrentCredit() + "," + cust.getCompanyName());
+        output.close();
+
+        File originalFile = new File("customer.txt");
+        originalFile.delete();
+
+        File tempFile = new File("temppayinvoice.txt");
+        tempFile.renameTo(originalFile);
+                
+        }
+         module2();
+         
+     }
 
     public static void module3() throws IOException {
         Scanner sc = new Scanner(System.in);
@@ -1478,6 +1728,7 @@ public class ASD {
         System.out.println("1.Nomral Customer");
         System.out.println("2.C - Customer");
         System.out.println("3.View C - Customer Credit Limit");
+        System.out.println("\n0. Exit");
         while (invalidInput) {
             System.out.print("\nPlease select a choice: ");
             String selection = sc.next();
@@ -1488,7 +1739,7 @@ public class ASD {
                 orderItem("flower");
             } else if (selection.equals("2")) {
                 invalidInput = false;
-                corderItem("flower");
+                readCustID("cc");
             } else if (selection.equals("3")) {
                 invalidInput = false;
                 viewCustomerLimit("cc");
@@ -1508,6 +1759,7 @@ public class ASD {
 
         File corporatecustomer = new File("customer.txt");
         boolean exist = corporatecustomer.exists();
+        
 
         //check if catalog file exist
         if (!exist) {
@@ -1517,7 +1769,7 @@ public class ASD {
             System.out.println("|                                   |");
             System.out.println("-------------------------------------");
         } else {
-            //count number of records in catalog.txt
+            //count number of records in customer.txt
             BufferedReader readCorporateCustomer = new BufferedReader(new FileReader("customer.txt"));
             int linesCorporateCustomer = 0;
             int number = 1;
@@ -1526,7 +1778,7 @@ public class ASD {
             }
             readCorporateCustomer.close();
 
-            //find the items with the flower as its type
+           
             Scanner read = new Scanner(corporatecustomer);
             for (int i = 0; i < linesCorporateCustomer; i++) {
                 String str = read.nextLine();
@@ -1542,7 +1794,7 @@ public class ASD {
         System.out.print("Please enter Customer ID: ");
         String custID = sc.nextLine();
 
-        //count number of records in catalog.txt
+        //count number of records in customer.txt
         BufferedReader readCatalog = new BufferedReader(new FileReader("customer.txt"));
         int linesCatalog = 0;
         while (readCatalog.readLine() != null) {
@@ -1550,7 +1802,7 @@ public class ASD {
         }
         readCatalog.close();
 
-        //find the items with the flower as its type
+        
         Scanner read = new Scanner(new File("customer.txt"));
         for (int i = 0; i < linesCatalog; i++) {
             String str = read.nextLine();
@@ -1600,7 +1852,7 @@ public class ASD {
                 orderItem("flower");
             } else if (selection.equals("2")) {
                 invalidInput = false;
-                corderItem("flower");
+                corderItem("flower","a");
             } else if (selection.equals("3")) {
                 invalidInput = false;
                 viewCustomerLimit("cc");
@@ -1614,139 +1866,27 @@ public class ASD {
         }
     }
 
-    public static void corderItem(String type) throws IOException {
+ private static int tmpTotal1=0;
+    public static void corderItem(String type, String custID) throws IOException {
         Scanner sc = new Scanner(System.in);
         boolean invalidInput = true;
         File catalog = new File("catalog.txt");
-        boolean exist = catalog.exists();
-        Product p1 = new Product();
-        Customer cust = new Customer();
+        File corder = new File("corder.txt");
         
-        String str1;
-
-        //check if catalog file exist
-        if (!exist) {
-            System.out.println("--------------------------");
-            System.out.println("|                        |");
-            System.out.println("|    Catalog is empty    |");
-            System.out.println("|                        |");
-            System.out.println("--------------------------");
-        } else {
-            //count number of records in catalog.txt
-            BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
-            int linesCatalog = 0;
-            int number = 1;
-
-            while (readCatalog.readLine() != null) {
-                linesCatalog++;
-            }
-            readCatalog.close();
-
-            System.out.println("   Product ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
-            System.out.println("   ==========\t\t============\t\t=========\t=================");
-
-            //find the items with the flower as its type
-            Scanner read = new Scanner(catalog);
-            for (int i = 0; i < linesCatalog; i++) {
-                String str = read.nextLine();
-                String[] cols = str.split(";");
-                if (cols[4].equals(type)) {
-                    System.out.println(number + ". " + cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3]);
-                    number++;
-
-                }
-
-            }
-            read.close();
-        }
-
-        System.out.print("Enter Customer ID:");
-        cust.setCustID(sc.nextLine());
-        String custIDtmp = cust.getCustID();
-
-        System.out.print("Please enter Product ID: ");
-        String productID = sc.nextLine();
-
-        //count number of records in catalog.txt
-        BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
-        int linesCatalog = 0;
-        while (readCatalog.readLine() != null) {
-            linesCatalog++;
-        }
-        readCatalog.close();
-
-        //find the items with the flower as its type
-        Scanner read = new Scanner(new File("catalog.txt"));
-        for (int i = 0; i < linesCatalog; i++) {
-            String str = read.nextLine();
-            String[] cols = str.split(";");
-            if (cols[0].equals(productID) && cols[4].equals(type)) {
-                p1.setProductID(productID);
-                p1.setProductName(cols[1]);
-                p1.setPrice(cols[2]);
-                p1.setQuantity(cols[3]);
-                p1.setType(cols[4]);
-            } else {
-
-            }
-        }
-        read.close();
         
-        if (p1.getProductID() == null) {
-            System.out.println("The product ID you entered is not exist, please try again.\n");
-            File tempFile = new File("tempc.txt");
-            tempFile.delete();
-            module3();
-        }
-        
-        System.out.print("\nEnter quantities: ");
-        p1.setQuantity(sc.nextLine());
-
-        System.out.print("\nEnter again coperate customer ID :");
-        cust.setCustID(sc.nextLine());
-
-        while (invalidInput) {
-
-            System.out.print("Do you still want to add orders ? Y or N only ");
-            str1 = sc.next();
-            if (str1.equals("Y")) {
-                invalidInput = false;
-                corderItem("flower");
-            } else if (str1.equals("N")) {
-                invalidInput = false;
-                System.out.println("Thank for the orders");
-
-            } else {
-                System.out.println("Invalid input. Please enter Y or N only");
-            }
-
-        }
-
-        Writer output;
-        output = new BufferedWriter(new FileWriter(new File("tempc.txt"), true));
-        output.append(cust.getCustID() + ";" + p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity());
-        output.close();
-
-        File originalFile = new File("corder.txt");
-        originalFile.delete();
-
-        File tempFile = new File("tempc.txt");
-        tempFile.renameTo(originalFile);
-
-    }
-        private static int tmpTotal=0;
-    public static void orderItem(String type) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        boolean invalidInput = true;
-        File catalog = new File("catalog.txt");
-        File order = new File("order.txt");
         boolean exist = catalog.exists();
         Product p1 = new Product();
         Customer c1 = new Customer();
         String str1;
-        String orderID = "A00001";
+        String orderID = "B00001";
         int orderCount = 0;
-        String cust = "null";
+        Queue<String> productIDs = new CircularLinkedQueue();
+        Queue<String> productName = new CircularLinkedQueue();        
+        Queue<String> Price = new CircularLinkedQueue();
+        Queue<String> Quantity = new CircularLinkedQueue();
+        Queue<String> quantityInStock = new CircularLinkedQueue();
+
+        
 
         //count number of records in catalog.txt
         BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
@@ -1765,12 +1905,364 @@ public class ASD {
                 String str = read.nextLine();
                 String[] cols = str.split(";");
                 if (cols[4].equals(type)) {
-                    System.out.println(cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3]);
+                   productIDs.enqueue(cols[0]);
+                    productName.enqueue(cols[1]);
+                    Price.enqueue(cols[2]);
+                    quantityInStock.enqueue(cols[3]);
+                 
+                    
+                    System.out.println(productIDs.dequeue()+"\t\t\t"+productName.dequeue()+"\t\t\t"+Price.dequeue()+"\t\t"+quantityInStock.dequeue());
+                }
+            }
+            read.close();
+            //read productID
+        System.out.print("Please enter Product ID: ");
+        String productID = sc.nextLine();
+ 
 
+        //find the items with the flower as its type
+        Scanner read2 = new Scanner(new File("catalog.txt"));
+        for (int i = 0; i < linesCatalog; i++) {
+            String str = read2.nextLine();
+            String[] cols = str.split(";");
+            if (cols[0].equals(productID) && cols[4].equals(type)) {
+                p1.setProductID(productID);
+                p1.setProductName(cols[1]);
+                p1.setPrice(cols[2]);
+                p1.setQuantity(cols[3]);
+                p1.setType(cols[4]);
+            } else {
+                 Writer output1;
+                output1 = new BufferedWriter(new FileWriter(new File("temp3.txt"), true));
+                output1.append(str + System.lineSeparator());
+                output1.close();    
+
+            }
+        }
+        read2.close();
+
+        if (p1.getProductID() == null) {
+            System.out.println("The product ID you entered is not exist, please try again.\n");
+
+            module3();
+        }
+       
+        //get quantity
+                    
+       System.out.print("\nEnter quantities: ");
+        int q = sc.nextInt();
+        p1.setTotal(q*p1.getPrice());
+        tmpTotal1 += p1.getTotal();
+        
+        Writer output11;
+        output11 = new BufferedWriter(new FileWriter(new File("temp3.txt"), true));
+        output11.append(p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getPrice() + ";" + (p1.getQuantity()-q)+ ";"+p1.getType());
+        output11.close();
+
+        File originalFile = new File("catalog.txt");
+        originalFile.delete();
+
+        File tempFile = new File("temp3.txt");
+        tempFile.renameTo(originalFile);
+        
+        if (exist) {
+            //count number of records
+            BufferedReader readOrder = new BufferedReader(new FileReader("corder.txt"));
+            int totalOrder = 0;
+            while (readOrder.readLine() != null) {
+                totalOrder++;
+            }
+            readOrder.close();
+
+            //calculate the latest OrderID
+            Scanner read1 = new Scanner(corder);
+            for (int i = 0; i < totalOrder; i++) {
+                String str = read1.nextLine();
+                String[] cols = str.split(";");
+                if (!cols[0].equals(orderID)) {
+                    orderCount++;
+                }
+            }
+            read1.close();
+
+            //create C-OrderID
+            if (orderCount < 9) {
+                orderID = "B0000" + (orderCount + 1);
+            } else if (orderCount < 99) {
+                orderID = "B000" + (orderCount + 1);
+            } else if (orderCount < 999) {
+                orderID = "B00" + (orderCount + 1);
+            } else if (orderCount < 9999) {
+                orderID = "B0" + (orderCount + 1);
+            }else {
+            orderID = "B00001";
+        }
+        } 
+        
+        
+        Writer output;
+        output = new BufferedWriter(new FileWriter(new File("corder.txt"), true));
+        
+         if (!exist) {
+                    output.append(orderID+";"+p1.getProductID() + ";" + p1.getProductName() + ";" +q+ ";" + p1.getTotal()+";"+custID);
+                } else {
+                    output.append(System.lineSeparator()+orderID +";" + p1.getProductID() + ";" + p1.getProductName() + ";" +q+";" + p1.getTotal()+";"+custID);
+                }
+                output.close();
+
+        while (invalidInput) {
+
+            System.out.print("Do you still want to add item ? Y or N only: ");
+            str1 = sc.next();
+            if (str1.equals("Y")) {
+                invalidInput = false;
+                caddnew(orderID,custID,"flower");
+            } else if (str1.equals("N")) {
+                invalidInput = false;
+                System.out.println("Thank for the orders");
+                tambah(tmpTotal1,orderID,"C",custID);
+            } else {
+                System.out.println("Invalid input. Please enter Y or N only");
+            }
+
+        }
+        
+}
+    public static void readCustID(String type) throws IOException {
+       Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+
+        File corporatecustomer = new File("customer.txt");
+        
+
+        Product p1 = new Product();
+        Customer c1 = new Customer();
+
+        BufferedReader readCustomer= new BufferedReader(new FileReader("customer.txt"));
+        int linesCustomer= 0;
+        int number = 1;
+        while (readCustomer.readLine() != null) {
+            linesCustomer++;
+        }
+        readCustomer.close();
+           
+         Scanner read4 = new Scanner(corporatecustomer);
+            for (int i = 0; i < linesCustomer; i++) {
+                String str = read4.nextLine();
+                String[] cols = str.split(",");
+                if (cols[2].equals(type)) {
+
+                    number++;
+                }
+            }
+            read4.close();
+        
+
+        
+        System.out.print("Please enter Customer ID: ");
+        String custID = sc.nextLine();
+     
+        
+        Scanner readC = new Scanner(new File("customer.txt"));
+        for (int i = 0; i < linesCustomer; i++) {
+            String str = readC.nextLine();
+            String[] cols = str.split(",");
+            if (cols[0].equals(custID) && cols[2].equals(type)) {
+                c1.setCustID(custID);
+                c1.setCustName(cols[1]);
+                c1.setCustType(cols[2]);
+                c1.setCreditLimit(cols[3]);
+                c1.setCurrentCredit(cols[4]);
+                c1.setCompanyName(cols[5]);
+            } else {
+
+            }
+             
+        }
+       readC.close();
+
+        if (c1.getCustID() == null) {
+            System.out.println("The Customer ID you entered is not exist, please try again.\n");
+		module3();
+        }
+        corderItem("flower",custID);
+    }
+    
+   public static void caddnew(String orderID,String custID,String type) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        File catalog = new File("catalog.txt");
+        File order = new File("corder.txt");
+        boolean exist = catalog.exists();
+        Product p1 = new Product();
+        Customer c1 = new Customer();
+        String str1;
+        Queue<String> productIDs = new CircularLinkedQueue();
+        Queue<String> productName = new CircularLinkedQueue();        
+        Queue<String> Price = new CircularLinkedQueue();
+        Queue<String> Quantity = new CircularLinkedQueue();
+        Queue<String> quantityInStock = new CircularLinkedQueue();
+        //count number of records in catalog.txt
+        BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+        int linesCatalog = 0;
+        while (readCatalog.readLine() != null) {
+            linesCatalog++;
+        }
+        readCatalog.close();
+        //display catalog
+        System.out.println("   Product ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
+            System.out.println("   ==========\t\t============\t\t=========\t=================");
+
+            //find the items with the flower as its type
+            Scanner read = new Scanner(new File("catalog.txt"));
+            for (int i = 0; i < linesCatalog; i++) {
+                String str = read.nextLine();
+                String[] cols = str.split(";");
+                if (cols[4].equals(type)) {
+                    productIDs.enqueue(cols[0]);
+                    productName.enqueue(cols[1]);
+                    Price.enqueue(cols[2]);
+                    quantityInStock.enqueue(cols[3]);
+                 
+                    
+                    System.out.println(productIDs.dequeue()+"\t\t\t"+productName.dequeue()+"\t\t\t"+Price.dequeue()+"\t\t"+quantityInStock.dequeue());
                 }
 
             }
             read.close();
+            //read productID
+        System.out.print("Please enter Product ID: ");
+        String productID = sc.nextLine();
+
+
+        //find the items with the flower as its type
+        Scanner read2 = new Scanner(new File("catalog.txt"));
+        for (int i = 0; i < linesCatalog; i++) {
+            String str = read2.nextLine();
+            String[] cols = str.split(";");
+            if (cols[0].equals(productID) && cols[4].equals(type)) {
+                p1.setProductID(productID);
+                p1.setProductName(cols[1]);
+                p1.setPrice(cols[2]);
+                p1.setQuantity(cols[3]);
+                p1.setType(cols[4]);
+            } else {
+                Writer output1;
+                output1 = new BufferedWriter(new FileWriter(new File("temp3.txt"), true));
+                output1.append(str + System.lineSeparator());
+                output1.close();   
+            }
+        }
+        read2.close();
+              
+        if (p1.getProductID() == null) {
+            System.out.println("The product ID you entered is not exist, please try again.\n");
+
+            module3();
+        }
+           
+        //get quantity
+        System.out.print("\nEnter quantities: ");
+        int q = sc.nextInt();
+        p1.setTotal(q*p1.getPrice());
+        tmpTotal1 += p1.getTotal();
+        
+        Writer output11;
+        output11 = new BufferedWriter(new FileWriter(new File("temp3.txt"), true));
+        output11.append(p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getPrice() + ";" + (p1.getQuantity()-q)+ ";"+p1.getType());
+        output11.close();
+
+        File originalFile = new File("catalog.txt");
+        originalFile.delete();
+
+        File tempFile = new File("temp3.txt");
+        tempFile.renameTo(originalFile);
+        
+        Writer output;
+        output = new BufferedWriter(new FileWriter(new File("corder.txt"), true));
+        
+         if (!exist) {
+                    output.append(orderID+";"+p1.getProductID() + ";" + p1.getProductName() + ";" +q+ ";" + p1.getTotal()+";"+custID);
+                } else {
+                    output.append(System.lineSeparator()+orderID +";" + p1.getProductID() + ";" + p1.getProductName() + ";" +q+";" + p1.getTotal()+";"+custID);
+                }
+                output.close();
+        
+        while (invalidInput) {
+
+            System.out.print("Do you still want to add item ? Y or N only: ");
+            str1 = sc.next();
+            if (str1.equals("Y")) {
+                invalidInput = false;
+                caddnew(orderID,custID,"flower");
+            } else if (str1.equals("N")) {
+                invalidInput = false;
+                System.out.println("Thank for the orders");
+                tambah(tmpTotal1,orderID,"C",custID);
+            } else {
+                System.out.println("Invalid input. Please enter Y or N only");
+            }
+
+        }
+    }
+    
+       private static int tmpTotal=0;
+    public static void orderItem(String type) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        boolean invalidInput = true;
+        File catalog = new File("catalog.txt");
+        File order = new File("order.txt");
+        boolean exist = catalog.exists();
+        Product p1 = new Product();
+        Customer c1 = new Customer();
+        String str1;
+        String orderID = "A00001";
+        int orderCount = 0;
+
+        String cust = "null";
+        
+        Queue<String> productIDs = new CircularLinkedQueue();
+        Queue<String> productName = new CircularLinkedQueue();        
+        Queue<String> Price = new CircularLinkedQueue();
+        Queue<String> Quantity = new CircularLinkedQueue();
+        Queue<String> quantityInStock = new CircularLinkedQueue();
+
+        //count number of records in catalog.txt
+        BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
+        int linesCatalog = 0;
+        while (readCatalog.readLine() != null) {
+            linesCatalog++;
+        }
+        readCatalog.close();
+        //display catalog
+        System.out.println("   \nProduct ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
+            System.out.println(" ==========\t\t============\t\t=========\t=================");
+
+            //find the items with the flower as its type
+            Scanner read = new Scanner(new File("catalog.txt"));
+            for (int i = 0; i < linesCatalog; i++) {
+                String str = read.nextLine();
+                String[] cols = str.split(";");
+                if (cols[4].equals(type)) {
+                    productIDs.enqueue(cols[0]);
+                    productName.enqueue(cols[1]);
+                    Price.enqueue(cols[2]);
+                    
+                    quantityInStock.enqueue(cols[3]);
+                    
+                    System.out.println(productIDs.dequeue()+"\t\t\t"+productName.dequeue()+"\t\t"+Price.dequeue()+"\t\t"+quantityInStock.dequeue());
+                    
+                }
+            
+                    
+
+            }
+            
+           
+            
+            read.close();
+            
+   
             //read productID
         System.out.print("Please enter Product ID: ");
         String productID = sc.nextLine();
@@ -1787,10 +2279,14 @@ public class ASD {
                 p1.setQuantity(cols[3]);
                 p1.setType(cols[4]);
             } else {
-
+                Writer output1;
+                output1 = new BufferedWriter(new FileWriter(new File("temp3.txt"), true));
+                output1.append(str + System.lineSeparator());
+                output1.close();    
             }
+            
         }
-        read.close();
+        read2.close();
 
         if (p1.getProductID() == null) {
             System.out.println("The product ID you entered is not exist, please try again.\n");
@@ -1799,9 +2295,20 @@ public class ASD {
         }
         //get quantity
         System.out.print("\nEnter quantities: ");
-        p1.setQuantity(sc.nextLine());
-        p1.setTotal(p1.getQuantity()*p1.getPrice());
+        int q = sc.nextInt();
+        p1.setTotal(q*p1.getPrice());
         tmpTotal += p1.getTotal();
+        
+        Writer output11;
+        output11 = new BufferedWriter(new FileWriter(new File("temp3.txt"), true));
+        output11.append(p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getPrice() + ";" + (p1.getQuantity()-q)+ ";"+p1.getType());
+        output11.close();
+
+        File originalFile = new File("catalog.txt");
+        originalFile.delete();
+
+        File tempFile = new File("temp3.txt");
+        tempFile.renameTo(originalFile);
         
         if (exist) {
             //count number of records
@@ -1836,21 +2343,21 @@ public class ASD {
             orderID = "A00001";
         }
         } 
-        
-        
+         
+
         Writer output;
         output = new BufferedWriter(new FileWriter(new File("order.txt"), true));
         
          if (!exist) {
-                    output.append(orderID+";"+p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity()+ ";" + p1.getTotal());
+                    output.append(orderID+";"+p1.getProductID() + ";" + p1.getProductName() + ";" + q+ ";" + p1.getTotal());
                 } else {
-                    output.append(System.lineSeparator()+orderID +";" + p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity()+";" + p1.getTotal()+ ";");
+                    output.append(System.lineSeparator()+orderID +";" + p1.getProductID() + ";" + p1.getProductName() + ";" + q+";" + p1.getTotal()+ ";");
                 }
                 output.close();
 
         while (invalidInput) {
 
-            System.out.print("Do you still want to add item ? Y or N only ");
+            System.out.print("Do you still want to add item ? Y or N only: ");
             str1 = sc.next();
             if (str1.equals("Y")) {
                 invalidInput = false;
@@ -1874,6 +2381,12 @@ public class ASD {
         Product p1 = new Product();
         Customer c1 = new Customer();
         String str1;
+        
+                Queue<String> productIDs = new CircularLinkedQueue();
+        Queue<String> productName = new CircularLinkedQueue();        
+        Queue<String> Price = new CircularLinkedQueue();
+        Queue<String> Quantity = new CircularLinkedQueue();
+        Queue<String> quantityInStock = new CircularLinkedQueue();
 
         //count number of records in catalog.txt
         BufferedReader readCatalog = new BufferedReader(new FileReader("catalog.txt"));
@@ -1883,8 +2396,8 @@ public class ASD {
         }
         readCatalog.close();
         //display catalog
-        System.out.println("   Product ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
-            System.out.println("   ==========\t\t============\t\t=========\t=================");
+        System.out.println("  \nProduct ID\t\tProduct Name\t\tPrice(RM)\tQuantity In Stock");
+            System.out.println(" ==========\t\t============\t\t=========\t=================");
 
             //find the items with the flower as its type
             Scanner read = new Scanner(new File("catalog.txt"));
@@ -1892,8 +2405,13 @@ public class ASD {
                 String str = read.nextLine();
                 String[] cols = str.split(";");
                 if (cols[4].equals(type)) {
-                    System.out.println(cols[0] + "\t\t" + cols[1] + "\t\t" + cols[2] + "\t\t" + cols[3]);
-
+                     productIDs.enqueue(cols[0]);
+                    productName.enqueue(cols[1]);
+                    Price.enqueue(cols[2]);
+                    quantityInStock.enqueue(cols[3]);
+                 
+                    
+                    System.out.println(productIDs.dequeue()+"\t\t\t"+productName.dequeue()+"\t\t\t"+Price.dequeue()+"\t\t"+quantityInStock.dequeue());
                 }
 
             }
@@ -1901,6 +2419,7 @@ public class ASD {
             //read productID
         System.out.print("Please enter Product ID: ");
         String productID = sc.nextLine();
+ 
 
         //find the items with the flower as its type
         Scanner read2 = new Scanner(new File("catalog.txt"));
@@ -1914,10 +2433,13 @@ public class ASD {
                 p1.setQuantity(cols[3]);
                 p1.setType(cols[4]);
             } else {
-
+                Writer output1;
+                output1 = new BufferedWriter(new FileWriter(new File("temp3.txt"), true));
+                output1.append(str + System.lineSeparator());
+                output1.close();    
             }
         }
-        read.close();
+        read2.close();
 
         if (p1.getProductID() == null) {
             System.out.println("The product ID you entered is not exist, please try again.\n");
@@ -1926,24 +2448,35 @@ public class ASD {
         }
         //get quantity
         System.out.print("\nEnter quantities: ");
-        p1.setQuantity(sc.nextLine());
-        p1.setTotal(p1.getQuantity()*p1.getPrice());
+        int q = sc.nextInt();
+        p1.setTotal(q*p1.getPrice());
         tmpTotal += p1.getTotal();
         
-        
+        Writer output11;
+        output11 = new BufferedWriter(new FileWriter(new File("temp3.txt"), true));
+        output11.append(p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getPrice() + ";" + (p1.getQuantity()-q)+ ";"+p1.getType());
+        output11.close();
+
+        File originalFile = new File("catalog.txt");
+        originalFile.delete();
+
+        File tempFile = new File("temp3.txt");
+        tempFile.renameTo(originalFile);
+
         Writer output;
         output = new BufferedWriter(new FileWriter(new File("order.txt"), true));
         
          if (!exist) {
-                    output.append(orderID+";"+p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity()+ ";" + p1.getTotal());
+                    output.append(orderID+";"+p1.getProductID() + ";" + p1.getProductName() + ";" + q+ ";" + p1.getTotal());
                 } else {
-                    output.append(System.lineSeparator()+orderID +";" + p1.getProductID() + ";" + p1.getProductName() + ";" + p1.getQuantity()+";" + p1.getTotal());
+                    output.append(System.lineSeparator()+orderID +";" + p1.getProductID() + ";" + p1.getProductName() + ";" + q+";" + p1.getTotal());
                 }
                 output.close();
-
+        
+        
         while (invalidInput) {
 
-            System.out.print("Do you still want to add item ? Y or N only ");
+            System.out.print("Do you still want to add item ? Y or N only: ");
             str1 = sc.next();
             if (str1.equals("Y")) {
                 invalidInput = false;
